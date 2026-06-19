@@ -1,0 +1,19 @@
+---
+# DEPLOY DISABLED until Session 3 (roadmap gate). See docs/architecture.md §10.
+#
+# Real target (recon 2026-06-12, SSH verified): account swensnet on 162.223.226.160,
+# main domain swens.net, docroot /home/swensnet/public_html (FIXED — main-domain
+# docroot cannot point at public/; use the root-rewrite fallback in §10).
+#
+# MUST-PROTECT inside that docroot (rsync exclude + never --delete over them):
+#   capp/         = MicroProcessingbySwens, LIVE at capp.swens.net
+#   me/           = life-dashboard app, LIVE at me.swens.net
+#   .well-known/  = cert validation
+# Plus the standard excludes: .git*, .cpanel.yml, config.php, config.local.php,
+# storage/, public/media/.
+#
+# LESSON (Selvatec deploy 11, banked in Mem): cPanel runs each task VERBATIM —
+# backslash line continuations break rsync. Single-line tasks only.
+deployment:
+  tasks:
+    - /bin/echo "swens.net deploy is disabled until the Session 3 gate writes the real tasks (docs/architecture.md §10)"

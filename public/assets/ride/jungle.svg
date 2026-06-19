@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 460" role="img" aria-label="Placeholder: the Guanacaste jungle, a volcano and a trail">
+  <defs>
+    <linearGradient id="jSky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#243a2c"/>
+      <stop offset="1" stop-color="#2c4534"/>
+    </linearGradient>
+  </defs>
+  <rect x="8" y="8" width="624" height="444" rx="24" fill="url(#jSky)" stroke="#5ea37d" stroke-opacity="0.35"/>
+  <!-- sun -->
+  <circle cx="500" cy="120" r="46" fill="#e6c15a" fill-opacity="0.85"/>
+  <!-- volcano -->
+  <path d="M120 300 L250 120 L290 168 L270 188 L300 220 L380 300 Z" fill="#1f3327"/>
+  <path d="M250 120 L232 150 L262 150 Z" fill="#c96f4a" fill-opacity="0.8"/>
+  <!-- far hills -->
+  <path d="M8 320 Q160 260 340 312 T632 300 L632 452 L8 452 Z" fill="#234032"/>
+  <!-- near hills -->
+  <path d="M8 372 Q200 322 400 372 T632 360 L632 452 L8 452 Z" fill="#1b3023"/>
+  <!-- winding trail -->
+  <path d="M120 452 Q260 400 300 372 Q345 338 470 352" fill="none" stroke="#cdb27a" stroke-opacity="0.85" stroke-width="10" stroke-linecap="round"/>
+  <!-- palms -->
+  <g stroke="#16241b" stroke-width="6" stroke-linecap="round" fill="none">
+    <path d="M560 372 q4 -50 -2 -78"/>
+  </g>
+  <g fill="#2f5a40">
+    <path d="M558 292 q-40 -10 -58 6 q34 -2 58 12 z"/>
+    <path d="M558 292 q40 -10 58 6 q-34 -2 -58 12 z"/>
+    <path d="M558 292 q-12 -42 4 -64 q14 26 -4 64 z"/>
+  </g>
+  <!-- eMTB silhouette on the trail -->
+  <g transform="translate(330,366)" fill="none" stroke="#0f1a13" stroke-width="5">
+    <circle cx="0" cy="14" r="14"/>
+    <circle cx="54" cy="14" r="14"/>
+    <path d="M0 14 L22 14 L40 -8 L54 14" stroke-linejoin="round" stroke-linecap="round"/>
+    <path d="M22 14 L34 -8 L40 -8" stroke-linejoin="round" stroke-linecap="round"/>
+    <path d="M34 -8 L26 -16" stroke-linecap="round"/>
+  </g>
+</svg>

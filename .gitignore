@@ -1,0 +1,10 @@
+config.php
+.env
+*.local.php
+/inbox/
+node_modules/
+.DS_Store
+Thumbs.db
+
+# Runtime — app/installer create these on demand (logs, page cache, rate-limit, lock)
+/storage/

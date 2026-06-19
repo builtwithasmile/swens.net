@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 460" role="img" aria-label="Placeholder: a film-era CRT screen">
+  <defs>
+    <linearGradient id="fScreen" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1d3346"/>
+      <stop offset="1" stop-color="#0e1b27"/>
+    </linearGradient>
+    <radialGradient id="fGlow" cx="50%" cy="42%" r="65%">
+      <stop offset="0" stop-color="#6b8cae" stop-opacity="0.45"/>
+      <stop offset="0.7" stop-color="#6b8cae" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect x="8" y="8" width="624" height="444" rx="24" fill="#16242f" stroke="#6b8cae" stroke-opacity="0.28"/>
+  <!-- film strip down the left edge -->
+  <rect x="40" y="40" width="56" height="380" rx="6" fill="#0d1822"/>
+  <g fill="#6b8cae" fill-opacity="0.55">
+    <rect x="52" y="52" width="32" height="44" rx="3"/>
+    <rect x="52" y="112" width="32" height="44" rx="3"/>
+    <rect x="52" y="172" width="32" height="44" rx="3"/>
+    <rect x="52" y="232" width="32" height="44" rx="3"/>
+    <rect x="52" y="292" width="32" height="44" rx="3"/>
+    <rect x="52" y="352" width="32" height="44" rx="3"/>
+  </g>
+  <!-- CRT monitor -->
+  <rect x="150" y="86" width="420" height="270" rx="20" fill="#28394a"/>
+  <rect x="170" y="106" width="380" height="200" rx="12" fill="url(#fScreen)"/>
+  <rect x="170" y="106" width="380" height="200" rx="12" fill="url(#fGlow)"/>
+  <!-- scanlines -->
+  <g stroke="#6b8cae" stroke-opacity="0.18" stroke-width="2">
+    <line x1="178" y1="126" x2="542" y2="126"/>
+    <line x1="178" y1="146" x2="542" y2="146"/>
+    <line x1="178" y1="166" x2="542" y2="166"/>
+    <line x1="178" y1="186" x2="542" y2="186"/>
+    <line x1="178" y1="206" x2="542" y2="206"/>
+    <line x1="178" y1="226" x2="542" y2="226"/>
+    <line x1="178" y1="246" x2="542" y2="246"/>
+    <line x1="178" y1="266" x2="542" y2="266"/>
+    <line x1="178" y1="286" x2="542" y2="286"/>
+  </g>
+  <!-- a "thinking" waveform + cursor -->
+  <path d="M200 210 L240 210 L256 170 L280 250 L300 196 L330 196 L346 224 L372 196 L470 196"
+        fill="none" stroke="#8fd3ad" stroke-opacity="0.9" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="482" y="184" width="16" height="24" fill="#8fd3ad" fill-opacity="0.85"/>
+  <!-- stand -->
+  <rect x="320" y="356" width="80" height="26" fill="#28394a"/>
+  <rect x="276" y="382" width="168" height="20" rx="8" fill="#28394a"/>
+</svg>

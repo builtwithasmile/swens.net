@@ -1,0 +1,14 @@
+-- Seed posts — Session 2B
+--
+-- INTENTIONALLY EMPTY (2026-06-12). The seven posts that lived here were
+-- AI-invented from a fact list: motives, chronology, and connective tissue
+-- Josh never wrote or said. He flagged them as fabrication ("you're combining
+-- info into some version of history only you created"), and they are removed.
+--
+-- PROVENANCE LAW (docs/voice.md): no first-person memory, motive, family fact,
+-- date, number, or quote appears on the site unless Josh wrote it, said it, or
+-- approved the exact words. The AI edits; it never authors. Every future entry
+-- here originates from a Josh voice memo or his own text, transcribed — never
+-- generated. Until then the building pages show honest empty states.
+--
+-- (No INSERT statements. This file is kept so the migration sequence is intact.)

@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 460" role="img" aria-label="Placeholder: something serious, under construction">
+  <defs>
+    <linearGradient id="bBg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#21333a"/>
+      <stop offset="1" stop-color="#1a2a26"/>
+    </linearGradient>
+  </defs>
+  <rect x="8" y="8" width="624" height="444" rx="24" fill="url(#bBg)" stroke="#5a8c6a" stroke-opacity="0.30"/>
+  <!-- ground line -->
+  <line x1="48" y1="382" x2="592" y2="382" stroke="#5a8c6a" stroke-opacity="0.4" stroke-width="2"/>
+  <!-- rising structure: ascending solid blocks -->
+  <g>
+    <rect x="110" y="300" width="86" height="82" fill="#2f4742"/>
+    <rect x="206" y="244" width="86" height="138" fill="#36534b"/>
+    <rect x="302" y="180" width="86" height="202" fill="#3e6055"/>
+    <rect x="398" y="120" width="86" height="262" fill="#477062"/>
+  </g>
+  <!-- window grid on the tallest block -->
+  <g fill="#8fd3ad" fill-opacity="0.35">
+    <rect x="414" y="140" width="18" height="22"/><rect x="446" y="140" width="18" height="22"/>
+    <rect x="414" y="176" width="18" height="22"/><rect x="446" y="176" width="18" height="22"/>
+    <rect x="414" y="212" width="18" height="22"/><rect x="446" y="212" width="18" height="22"/>
+    <rect x="414" y="248" width="18" height="22"/><rect x="446" y="248" width="18" height="22"/>
+  </g>
+  <!-- scaffold lines over the second-tallest -->
+  <g stroke="#7d8a7f" stroke-opacity="0.5" stroke-width="2" fill="none">
+    <rect x="302" y="180" width="86" height="202"/>
+    <line x1="302" y1="248" x2="388" y2="248"/>
+    <line x1="302" y1="316" x2="388" y2="316"/>
+    <line x1="345" y1="180" x2="345" y2="382"/>
+  </g>
+  <!-- crane -->
+  <line x1="540" y1="92" x2="540" y2="382" stroke="#e6c15a" stroke-opacity="0.7" stroke-width="4"/>
+  <line x1="540" y1="100" x2="372" y2="100" stroke="#e6c15a" stroke-opacity="0.7" stroke-width="4"/>
+  <line x1="540" y1="100" x2="560" y2="140" stroke="#e6c15a" stroke-opacity="0.7" stroke-width="3"/>
+  <line x1="420" y1="100" x2="420" y2="140" stroke="#e6c15a" stroke-opacity="0.5" stroke-width="2"/>
+  <rect x="410" y="140" width="20" height="14" fill="#e6c15a" fill-opacity="0.7"/>
+</svg>

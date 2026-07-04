@@ -1,11 +1,11 @@
 {
-    "template_version": 27,
-    "crew_version": 27,
+    "template_version": 30,
+    "crew_version": 30,
     "type": "product",
     "lane": "php",
     "deploy": "cpanel:swens.net",
     "core": "none",
     "scaffolded": "2026-07-03",
-    "synced": "2026-07-03",
-    "managed_hashes": {}
+    "synced": "2026-07-04",
+    "managed_hashes": []
 }

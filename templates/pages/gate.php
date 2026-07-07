@@ -9,7 +9,7 @@
 <section class="section-pad narrow" style="--accent:var(--gold)">
   <p class="eyebrow">The Gate</p>
   <h1 class="h2-display">Who&rsquo;s Swens?</h1>
-  <p><!-- VOICE: plain bio, no cadence (voice.md AI-tells ban). Facts: film credits, HotSync 2000-2022, Guanacaste, KillerBud canon (Mem fact pack 2026-06-12). -->
+  <p><!-- VOICE: plain bio, no cadence (voice.md AI-tells ban). Facts: film credits, HotSync 2000-2022, Guanacaste, KillerBud canon (swens-memory fact pack 2026-06-12). -->
     Short version: I made the computers on TV look like they were doing something. The X-Files, Stargate SG-1, shows like that. When a console beeped like it meant it, that was usually my desk. Somebody also had to keep the real machines alive between takes, and that part quietly became the career.
   </p>
   <p>

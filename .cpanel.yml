@@ -12,7 +12,7 @@
 # Plus the standard excludes: .git*, .cpanel.yml, config.php, config.local.php,
 # storage/, public/media/.
 #
-# LESSON (Selvatec deploy 11, banked in Mem): cPanel runs each task VERBATIM —
+# LESSON (Selvatec deploy 11, banked in swens-memory): cPanel runs each task VERBATIM —
 # backslash line continuations break rsync. Single-line tasks only.
 deployment:
   tasks:

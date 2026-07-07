@@ -5,7 +5,7 @@
  * No financials, no stakes. Honest status is a feature.
  * Hard law 3: family only as brands/characters.
  * Law 7: the maple.cr slogan is banned (see docs/voice.md).
- * FACTS LOCKED 2026-06-12 from Mem (Operating Context 2026): KillerBud is NOT
+ * FACTS LOCKED 2026-06-12 from swens-memory (Operating Context 2026): KillerBud is NOT
  * related to Waka's Dog House; engine framing (funds/life/build) is Josh's own.
  */
 ?>

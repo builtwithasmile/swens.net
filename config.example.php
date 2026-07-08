@@ -1,5 +1,5 @@
 <?php
-// swens.net — The Compound — configuration template.
+// swens.net — Porch — configuration template.
 // Copy to config.php at the project root and fill in real values.
 // config.php is gitignored. NEVER commit it.
 // This file lists every variable name with NO values — that is what Claude reads.

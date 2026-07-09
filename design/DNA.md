@@ -75,8 +75,11 @@ clock (Costa Rica) in the footer contact row.
 Full-bleed personal photography: black-and-white, or moody near-black color. Portraits and
 place (the jungle, the bike, the shop) — treated dark, never bright-stock. Mono captions
 overlay in Fragment Mono uppercase. Forbidden: stock-smiling-people, emoji-as-icons, bright
-illustration on hero surfaces. The existing flat `/assets/ride/*.svg` illustrations do not
-match this DNA — the restyle pass replaces them with photography or re-cuts them monochrome.
+illustration on hero surfaces. The flat `/assets/ride/*.svg` illustrations this stance
+originally targeted are gone (deleted 2026-07-10 with the "ride" narrative they belonged
+to — see memory/state.md). This stance still applies to wherever real photography lands
+next (a future `/office` pass, most likely), it just has no current illustration debt to
+replace.
 
 ## 10. Implementation map (this repo)
 

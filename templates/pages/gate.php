@@ -3,17 +3,21 @@
  * The Gate — /gate
  * Two jobs: say who Swens is; take key requests without issuing anything.
  * States: $sent (bool), $errors (array), $old (array with preserved field values).
+ * Content NOT re-audited against the 2026-07-10 achievement-not-plot policy (see
+ * memory/state.md) — only the HotSync date error below was fixed (pure factual
+ * correction, matches home.php). The family reference and overall narrative voice
+ * on this page are a separate, Josh-only content-policy call. Flagged as open loop.
  */
 ?>
 <!-- Section: Who's Swens -->
 <section class="section-pad narrow" style="--accent:var(--gold)">
   <p class="eyebrow">The Gate</p>
   <h1 class="h2-display">Who&rsquo;s Swens?</h1>
-  <p><!-- VOICE: plain bio, no cadence (voice.md AI-tells ban). Facts: film credits, HotSync 2000-2022, Guanacaste, KillerBud canon (swens-memory fact pack 2026-06-12). -->
+  <p><!-- VOICE: plain bio, no cadence (voice.md AI-tells ban). Facts: film credits, HotSync 2000-2020 (corrected 2026-07-10, was wrongly 2000-2022 here), Guanacaste, KillerBud canon (swens-memory fact pack 2026-06-12). -->
     Short version: I made the computers on TV look like they were doing something. The X-Files, Stargate SG-1, shows like that. When a console beeped like it meant it, that was usually my desk. Somebody also had to keep the real machines alive between takes, and that part quietly became the career.
   </p>
   <p>
-    In 2000 I went home to small-town BC and started HotSync, the town&rsquo;s computer company. Twenty-two years of that. In 2022 we packed the family up and moved to Guanacaste, Costa Rica.
+    In 2000 I went home to small-town BC and started HotSync, the town&rsquo;s computer company. Twenty years of that. In 2022 we packed the family up and moved to Guanacaste, Costa Rica.
   </p>
   <p>
     Somewhere in there I started drawing myself as a cartoon with a bud for a head. One eye locked on, one eye somewhere else. People who know me say the eyes are accurate. The cartoon got friends, the friends got jobs, and these days a small crew of them helps me build everything you see here.

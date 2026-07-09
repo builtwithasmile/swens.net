@@ -130,7 +130,7 @@ class PostsController
         if ($tier === 'keyed') {
             $building = array_key_first(Buildings::KEYED_SECTIONS);
         }
-        $kind     = (string) $request->input('kind', 'note');
+        $kind     = (string) $request->input('kind', 'welcome');
         $title    = trim((string) $request->input('title', ''));
         $slug     = trim((string) $request->input('slug', ''));
         $body_md  = (string) $request->input('body_md', '');

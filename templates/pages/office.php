@@ -151,7 +151,7 @@
       <?php foreach ($officePosts as $p): ?>
       <div style="padding:.875rem 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:baseline;gap:1rem">
         <a href="/office/<?= e($p['slug']) ?>" style="color:var(--text);text-decoration:underline;text-underline-offset:3px;font-size:.9375rem"><?= e($p['title']) ?></a>
-        <span style="font-size:.75rem;color:var(--muted);white-space:nowrap;font-family:Georgia,'Times New Roman',serif;letter-spacing:.06em"><?= e(substr($p['created_at'], 0, 10)) ?></span>
+        <span style="font-size:.75rem;color:var(--muted);white-space:nowrap;font-family:var(--font-mono);letter-spacing:.04em"><?= e(substr($p['created_at'], 0, 10)) ?></span>
       </div>
       <?php endforeach; ?>
     </div>

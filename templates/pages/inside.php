@@ -119,7 +119,7 @@ $hasNew      = ($newPosts || $newCheckins);
     <h2 class="eyebrow">Now</h2>
     <?php foreach ($nows as $p): ?>
     <article style="margin-top:1.25rem">
-      <h3 style="font-family:Georgia,'Times New Roman',serif;font-size:1.25rem;font-weight:400;margin-bottom:.75rem"><?= e($p['title']) ?></h3>
+      <h3 style="font-family:var(--font-sans);font-size:1.25rem;font-weight:600;letter-spacing:-.02em;margin-bottom:.75rem"><?= e($p['title']) ?></h3>
       <div class="prose" style="color:var(--muted);line-height:1.7"><?= $p['body_html'] ?></div>
     </article>
     <?php endforeach; ?>
@@ -135,7 +135,7 @@ $hasNew      = ($newPosts || $newCheckins);
     <div class="journal" style="margin-top:1.25rem">
       <?php foreach ($stories as $p): ?>
       <article class="journal-entry" style="margin-bottom:2.5rem;padding-bottom:2.5rem;border-bottom:1px solid var(--line)">
-        <h3 style="font-family:Georgia,'Times New Roman',serif;font-size:1.25rem;font-weight:400;margin-bottom:.75rem"><?= e($p['title']) ?></h3>
+        <h3 style="font-family:var(--font-sans);font-size:1.25rem;font-weight:600;letter-spacing:-.02em;margin-bottom:.75rem"><?= e($p['title']) ?></h3>
         <div class="prose" style="color:var(--muted);line-height:1.7"><?= $p['body_html'] ?></div>
       </article>
       <?php endforeach; ?>

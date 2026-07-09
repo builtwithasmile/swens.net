@@ -87,7 +87,7 @@ $hasNew      = ($newPosts || $newCheckins);
         <input type="text" name="mood" maxlength="40"
           style="width:14rem;margin-top:.35rem;padding:.5rem .7rem;background:transparent;border:1px solid var(--line);border-radius:6px;color:var(--text);font:inherit">
       </label>
-      <div><button type="submit" style="min-height:44px;padding:.7rem 1.4rem;background:var(--accent);color:#0a0e14;border:0;border-radius:6px;font:inherit;font-weight:600;cursor:pointer">Say hi</button></div>
+      <div><button type="submit" style="min-height:44px;padding:.7rem 1.4rem;background:var(--accent);color:var(--on-accent);border:0;border-radius:6px;font:inherit;font-weight:600;cursor:pointer">Say hi</button></div>
     </form>
     <?php else: ?>
     <p class="lead" style="font-size:.9375rem;color:var(--muted)">(Sign in with your key to leave a note.)</p>

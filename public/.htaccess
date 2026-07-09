@@ -1,4 +1,4 @@
-# crossroads-dd front controller (docroot = this public/ dir)
+# swens.net front controller (docroot = this public/ dir)
 <IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteBase /

@@ -13,7 +13,6 @@
   --muted:   #999999;
   --line:    #333336;   /* hairline, dark twin of #e6e6e6 */
   --gold:    #f5f5f5;   /* accent slot — monochrome: accent on dark is white */
-  --green:   #b3b3b3;   /* legacy slot, grayscaled */
   --clay:    #ff4400;   /* functional signal ONLY: errors, live/REC dots */
   --radius:  0px;       /* square media; buttons pill via border-radius:999px */
   --shadow:  none;
@@ -190,7 +189,6 @@ body.interior {
   --muted:   #666666;   /* gray voice */
   --line:    #e6e6e6;   /* hairline */
   --gold:    #1a1a1a;   /* accent slot — monochrome: accent on light is ink */
-  --green:   #666666;   /* legacy slot, grayscaled */
   --clay:    #d63a00;   /* functional signal ONLY (field errors) — darker for contrast */
   --radius:  0px;       /* square media/cards */
   --shadow:  0 2px 16px rgba(0,0,0,.06);

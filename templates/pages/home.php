@@ -28,7 +28,7 @@
       <p class="lead">IT, retail, and hospitality — built and run out of Canada and Costa Rica.</p>
 
       <p class="ride-reach">Reach me at <a href="mailto:info@swens.net">info@swens.net</a>.</p>
-      <p class="ride-elsewhere muted">Also here: <a href="/office">the work</a> &middot; <a href="/gate">a way in</a></p>
+      <p class="ride-elsewhere">Also here: <a href="/office">the work</a> &middot; <a href="/gate">a way in</a></p>
     </div>
   </section>
 

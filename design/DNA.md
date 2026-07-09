@@ -85,8 +85,12 @@ match this DNA — the restyle pass replaces them with photography or re-cuts th
   Rebirth light mode). Token NAMES kept for compatibility (`--gold` = the accent slot,
   now monochrome).
 - Fonts load via Google Fonts `<link>` in `templates/layouts/site.php`.
-- Page structure mapping: home "ride" = dark hero + scroll-lit statement + light project
-  index (`/office` destinations as SELECTED PROJECTS rows); interiors = light gallery pages;
+- Page structure mapping: home = single dark hero screen, identity + one line + contact,
+  no scroll narrative (round-table 2026-07-10 chose restraint over a multi-station "ride"
+  after Josh saw the personal-history version live and pulled it back — see memory/state.md).
+  The scroll-lit statement device (§7/§8) is unclaimed for now — re-evaluate for a page
+  with earned specific content to unspool, e.g. a future `/office` pass, not force it onto
+  home. `/office` destinations as SELECTED PROJECTS rows; interiors = light gallery pages;
   footer = giant wordmark + contact columns + clock.
 - Next: `/build restyle to DNA` migrates section by section.
 

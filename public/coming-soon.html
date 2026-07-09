@@ -1,0 +1,91 @@
+<!--
+  Reference copy of the manual placeholder deployed direct to production
+  (scp to /home/swensnet/public_html/index.html, 2026-07-09) to replace the
+  bare Apache "Index of /" directory listing at the docroot. This file is
+  NOT served from here and is NOT part of the app's routing (public/index.php
+  is the real front controller) — it exists only so the live artifact is
+  version-tracked. The repo's own .cpanel.yml deploy stays disabled until
+  the Session 3 gate (see docs note in .cpanel.yml + memory/state.md open
+  loop "Live deploy"); this placeholder was pushed out-of-band and does not
+  touch that pipeline.
+-->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Swens — Coming Soon</title>
+<meta name="description" content="Josh Swenson's site is being rebuilt. Back soon.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fragment+Mono&family=Plus+Jakarta+Sans:wght@400;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --stage:#000000;
+    --ink:#F5F5F5;
+    --gray:#999999;
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    background:var(--stage);
+    color:var(--ink);
+    font-family:'Plus Jakarta Sans',system-ui,sans-serif;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    min-height:100vh;
+    padding:24px;
+    text-align:center;
+    animation:fadeUp 900ms ease-out both;
+  }
+  @keyframes fadeUp{
+    from{opacity:0; transform:translateY(12px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+  .eyebrow{
+    font-family:'Fragment Mono',monospace;
+    font-size:12px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--gray);
+    margin-bottom:28px;
+  }
+  h1{
+    font-weight:800;
+    letter-spacing:-0.05em;
+    line-height:1.0;
+    font-size:clamp(48px, 12vw, 160px);
+    margin:0;
+  }
+  p.tag{
+    font-weight:400;
+    color:var(--gray);
+    font-size:clamp(15px, 2.2vw, 20px);
+    margin:24px 0 40px;
+    max-width:32ch;
+  }
+  a.contact{
+    font-family:'Fragment Mono',monospace;
+    font-size:13px;
+    letter-spacing:0.05em;
+    color:var(--ink);
+    text-decoration:none;
+    border-bottom:1px solid #333336;
+    padding-bottom:2px;
+  }
+  a.contact:hover{border-color:var(--ink);}
+  @media (prefers-reduced-motion: reduce){
+    body{animation:none;}
+  }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Swens.net</div>
+  <h1>Coming&nbsp;Soon</h1>
+  <p class="tag">The site is being rebuilt. In the meantime, say hello.</p>
+  <a class="contact" href="mailto:info@swens.net">info@swens.net</a>
+</body>
+</html>

@@ -153,6 +153,9 @@ class PostsController
         if ($slug === '' || mb_strlen($slug) > 160 || !preg_match('/^[a-z0-9\-]+$/', $slug)) {
             $errors['slug'] = 'Slug required, lowercase a-z 0-9 hyphens only (max 160).';
         }
+        if (mb_strlen($tags) > 255) {
+            $errors['tags'] = 'Tags too long (max 255).';
+        }
 
         $data = compact('building', 'tier', 'kind', 'title', 'slug', 'body_md', 'tags');
         return [$data, $errors];

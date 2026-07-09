@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-label="Automation icon">
+<rect width="96" height="96" rx="24" fill="#fffaf0"/>
+<circle cx="74" cy="22" r="14" fill="#c46a22" opacity=".22"/>
+<path d="M28 50a20 20 0 0132-16M68 48a20 20 0 01-32 16" stroke="#141414" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity=".88"/><path d="M61 22v14h14M35 74V60H21" stroke="#141414" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity=".88"/><circle cx="48" cy="49" r="8" fill="#c46a22"/>
+</svg>

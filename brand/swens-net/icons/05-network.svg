@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-label="Network icon">
+<rect width="96" height="96" rx="24" fill="#fffaf0"/>
+<circle cx="74" cy="22" r="14" fill="#c46a22" opacity=".22"/>
+<circle cx="28" cy="28" r="9" stroke="#141414" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity=".88"/><circle cx="68" cy="28" r="9" stroke="#141414" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity=".88"/><circle cx="48" cy="68" r="9" stroke="#141414" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity=".88"/><path d="M36 32l24 0M32 36l12 24M64 36L52 60" stroke="#141414" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity=".88"/>
+</svg>

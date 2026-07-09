@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-label="Settings icon">
+<rect width="96" height="96" rx="24" fill="#fffaf0"/>
+<circle cx="74" cy="22" r="14" fill="#c46a22" opacity=".22"/>
+<circle cx="48" cy="48" r="10" stroke="#141414" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity=".88"/><path d="M48 17v10M48 69v10M17 48h10M69 48h10M26 26l7 7M63 63l7 7M70 26l-7 7M33 63l-7 7" stroke="#141414" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity=".88"/>
+</svg>

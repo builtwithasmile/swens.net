@@ -1,0 +1,44 @@
+{
+  "url": "swens.net",
+  "page_title": "Swens \u2014 Coming Soon",
+  "description": "Personal + company hub for Swens Ventures",
+  "tab_text": "Swens \u2014 Coming\u2026 / Swens \u00b7 Josh Swen\u2026",
+  "source_basis": "Live page verified: sparse personal hub, IT/retail/hospitality, Canada/Costa Rica.",
+  "palette": {
+    "bg": "#f4efe3",
+    "bg2": "#eee5d6",
+    "bg3": "#d8ede8",
+    "surface": "#fffaf0",
+    "ink": "#12151a",
+    "text": "#141414",
+    "subtext": "#4c4a43",
+    "muted": "#7b8a86",
+    "primary": "#16202a",
+    "accent": "#c46a22",
+    "accent2": "#0e7373",
+    "line": "#2a3138"
+  },
+  "favicon": "favicon.svg",
+  "favicon_png": "favicon-32.png",
+  "heroes": [
+    "hero-01.svg",
+    "hero-02.svg"
+  ],
+  "top_placeholders": [
+    "placeholder-top-01.svg",
+    "placeholder-top-02.svg"
+  ],
+  "icons": [
+    "icons/01-dashboard.svg",
+    "icons/02-message.svg",
+    "icons/03-calendar.svg",
+    "icons/04-shield.svg",
+    "icons/05-network.svg",
+    "icons/06-map.svg",
+    "icons/07-chart.svg",
+    "icons/08-automation.svg",
+    "icons/09-people.svg",
+    "icons/10-settings.svg"
+  ],
+  "notes": "V2: site-specific visual direction. Public sites were matched to readable live content; private/dev app subdomains were matched to the supplied product brief."
+}

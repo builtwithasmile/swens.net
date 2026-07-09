@@ -60,6 +60,39 @@ class Validator
         return $this;
     }
 
+    public function maxLen(string $field, int $max, ?string $label = null): self
+    {
+        $raw = $this->data[$field] ?? '';
+        // A non-scalar (a `field[]=` array submission) cast to string is the
+        // literal "Array" (5 chars) and would silently PASS any max >= 5 —
+        // exactly the inputs a length cap exists to reject. Fail it instead.
+        if (is_array($raw)) {
+            $this->errors[$field] = ($label ?? ucfirst($field)) . " must be at most $max characters";
+            return $this;
+        }
+        if (strlen((string) $raw) > $max) {
+            $this->errors[$field] = ($label ?? ucfirst($field)) . " must be at most $max characters";
+        }
+        return $this;
+    }
+
+    public function pattern(string $field, string $regex, ?string $label = null): self
+    {
+        $raw = $this->data[$field] ?? '';
+        if (is_array($raw)) {
+            $this->errors[$field] = ($label ?? ucfirst($field)) . ' is not in a valid format';
+            return $this;
+        }
+        $v = (string) $raw;
+        // Blank passes (presence is required()'s job). preg_match() returning
+        // false (malformed regex — a dev error) also lands here: fail the field
+        // rather than silently accepting unvalidated input.
+        if ($v !== '' && @preg_match($regex, $v) !== 1) {
+            $this->errors[$field] = ($label ?? ucfirst($field)) . ' is not in a valid format';
+        }
+        return $this;
+    }
+
     public function fails(): bool
     {
         return $this->errors !== [];

@@ -10,6 +10,9 @@
   <meta property="og:description" content="<?= e($meta_desc ?? '') ?>">
   <meta property="og:type" content="website">
   <link rel="icon" type="image/svg+xml" href="/assets/swens-mark.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=Fragment+Mono&display=swap" rel="stylesheet">
   <?php
     $cssFile = (defined('APP_ROOT') ? APP_ROOT : dirname(__DIR__, 3)) . '/public/assets/css/site.css';
     $ver = is_file($cssFile) ? filemtime($cssFile) : 1;

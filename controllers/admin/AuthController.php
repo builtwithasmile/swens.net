@@ -44,7 +44,7 @@ class AuthController
             $link = (defined('APP_URL') ? APP_URL : '') . '/admin/auth/' . urlencode($token) . '?expires=' . $expires;
             $subject = '[swens.net] Admin login link';
             $body = "Your admin login link (valid 15 minutes):\n\n{$link}\n\nIf you did not request this, ignore it.";
-            @mail($email, $subject, $body, 'From: ' . (defined('MAIL_FROM') ? MAIL_FROM : 'noreply@swens.net'));
+            send_mail($email, $subject, $body, 'From: ' . (defined('MAIL_FROM') ? MAIL_FROM : 'noreply@swens.net'));
         }
 
         $_SESSION['flash'] = 'Check your email for a login link.';

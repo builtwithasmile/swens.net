@@ -85,3 +85,35 @@ function pct(float|int|null $n, int $dp = 1): string
 {
     return number_format((float) $n * 100, $dp) . '%';
 }
+
+/**
+ * CRLF-hardened wrapper around mail(). Strips any \r or \n from the
+ * recipient, subject, and every header line so untrusted input (e.g. a
+ * contact address echoed into Reply-To) can never inject extra headers or
+ * an envelope-recipient change. $headers may be a single string (mail()'s
+ * native \r\n-joined form) or an array of "Name: value" lines.
+ *
+ * Always the ONLY way this app sends outbound mail — never call mail()
+ * directly (Selvatec security defaults).
+ */
+function send_mail(string $to, string $subject, string $body, string|array $headers = ''): bool
+{
+    $strip = static fn (string $v): string => str_replace(["\r", "\n"], '', $v);
+
+    $to      = $strip($to);
+    $subject = $strip($subject);
+
+    if (is_array($headers)) {
+        $headerLines = array_map($strip, $headers);
+    } else {
+        $headerLines = array_filter(array_map($strip, preg_split('/\r\n|\r|\n/', $headers) ?: []), static fn (string $l): bool => $l !== '');
+    }
+    $headerString = implode("\r\n", $headerLines);
+
+    if ($to === '' || $subject === '') {
+        logger('send_mail: empty to/subject after sanitizing — send skipped', 'WARN');
+        return false;
+    }
+
+    return @mail($to, $subject, $body, $headerString);
+}

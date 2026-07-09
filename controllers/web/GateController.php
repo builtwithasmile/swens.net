@@ -130,6 +130,6 @@ class GateController
             $headers .= 'Reply-To: ' . $contact . "\r\n";
         }
 
-        @mail($to, $subject, $body, $headers);
+        send_mail($to, $subject, $body, $headers);
     }
 }

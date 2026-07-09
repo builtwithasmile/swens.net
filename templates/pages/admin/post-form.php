@@ -30,8 +30,8 @@ $v       = fn(string $k, string $d = '') => e($post[$k] ?? $d);
     <div class="form-group">
       <label>Kind</label>
       <select name="kind">
-        <?php foreach (['note','build','photo','update','product'] as $k): ?>
-        <option value="<?= $k ?>" <?= ($post['kind'] ?? 'note') === $k ? 'selected' : '' ?>><?= $k ?></option>
+        <?php foreach (['welcome','about','board','now','story'] as $k): ?>
+        <option value="<?= $k ?>" <?= ($post['kind'] ?? 'welcome') === $k ? 'selected' : '' ?>><?= $k ?></option>
         <?php endforeach ?>
       </select>
     </div>

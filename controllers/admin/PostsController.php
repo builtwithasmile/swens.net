@@ -144,6 +144,9 @@ class PostsController
         if (!in_array($tier, ['public', 'keyed'], true)) {
             $errors['tier'] = 'Tier must be public or keyed.';
         }
+        if (!in_array($kind, ['welcome', 'about', 'board', 'now', 'story'], true)) {
+            $errors['kind'] = 'Invalid kind.';
+        }
         if ($title === '' || mb_strlen($title) > 160) {
             $errors['title'] = 'Title required (max 160).';
         }

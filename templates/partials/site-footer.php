@@ -28,6 +28,11 @@
         <a href="https://killerbud.ca" rel="noopener" style="color:var(--text)"><strong>KillerBud</strong></a>
         — the side that doesn't take itself seriously. A small cast of characters.
       </li>
+      <li style="font-size:.9375rem;line-height:1.55;color:var(--muted)">
+        <!-- Blurb is Josh's own words, 2026-07-10 (provenance law, see header comment). -->
+        <a href="https://selvatec.ca/own-your-software" rel="noopener" style="color:var(--text)"><strong>Selvatec Software</strong></a>
+        — custom software that replaces monthly fees, buy once and done, we keep it running
+      </li>
     </ul>
   </div>
 </footer>

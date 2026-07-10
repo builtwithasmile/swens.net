@@ -15,6 +15,10 @@ define('APP_TIMEZONE', 'America/Costa_Rica');
 define('SESSION_NAME', 'swens_session');
 define('SESSION_SECRET', '');               // bin2hex(random_bytes(32)); used by S2 magic links
 
+// Idle logout (optional — defaults below apply if left undefined):
+// define('ADMIN_IDLE_TIMEOUT_SECONDS', 1800);  // 30 min, owner admin session
+// define('KEYED_IDLE_TIMEOUT_SECONDS', 7200);  // 2 hr, keyed-circle session
+
 // ---- The Gate (Session 1) ----
 define('MAIL_FROM', '');                    // domain-aligned mailbox, e.g. gate@swens.net
 define('MAIL_OWNER', '');                   // Josh's inbox — gate requests land here

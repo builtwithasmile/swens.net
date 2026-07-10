@@ -24,6 +24,16 @@ class KeyedOnly
             redirect('/gate');
         }
 
+        // Idle timeout applies to keyed visitors only — the owner's clock is
+        // tracked separately by OwnerOnly, and previewing /inside shouldn't
+        // cost the owner their admin session.
+        if ($isKeyed && !$isOwner
+            && session_idle_expired((int) config('KEYED_IDLE_TIMEOUT_SECONDS', 7200))
+        ) {
+            unset($_SESSION['is_keyed'], $_SESSION['member_id']);
+            redirect('/gate');
+        }
+
         // Re-validate a keyed visitor against live status every request, so a
         // revoke (or a deleted member) takes effect immediately — not just at the
         // next /key click. One indexed SELECT; keyed pages are uncached anyway.

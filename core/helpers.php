@@ -64,6 +64,19 @@ function boot_session(): void
     session_start();
 }
 
+/**
+ * True if the session's last recorded activity is older than $timeoutSeconds.
+ * Always stamps 'last_activity' to now as a side effect, so every call that
+ * doesn't trip the timeout also resets the clock for the next one.
+ */
+function session_idle_expired(int $timeoutSeconds): bool
+{
+    $now = time();
+    $last = $_SESSION['last_activity'] ?? null;
+    $_SESSION['last_activity'] = $now;
+    return $last !== null && ($now - $last) > $timeoutSeconds;
+}
+
 function csrf_token(): string
 {
     return \App\Core\Csrf::token();

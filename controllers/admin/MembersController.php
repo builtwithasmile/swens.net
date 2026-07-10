@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controllers\Admin;
 
+use App\Core\AuditLog;
 use App\Core\Csrf;
 use App\Core\Request;
 use App\Core\Response;
@@ -70,6 +71,7 @@ class MembersController
             redirect('/admin/members');
         }
 
+        AuditLog::record('member.issue', "{$name} <{$email}>");
         $base = defined('APP_URL') ? APP_URL : '';
         $this->flash("Key issued for {$name}. Send them this link: {$base}/key/{$result}");
         redirect('/admin/members');
@@ -78,7 +80,10 @@ class MembersController
     public function revoke(Request $request, Response $response): void
     {
         $this->verifyCsrf($request);
-        Members::setStatus((int) $request->param('id', 0), 'revoked');
+        $id = (int) $request->param('id', 0);
+        $member = Members::byId($id);
+        Members::setStatus($id, 'revoked');
+        AuditLog::record('member.revoke', $member['display_name'] ?? (string) $id);
         $this->flash('Key revoked. That link no longer works.');
         redirect('/admin/members');
     }
@@ -86,7 +91,10 @@ class MembersController
     public function approve(Request $request, Response $response): void
     {
         $this->verifyCsrf($request);
-        Members::setStatus((int) $request->param('id', 0), 'approved');
+        $id = (int) $request->param('id', 0);
+        $member = Members::byId($id);
+        Members::setStatus($id, 'approved');
+        AuditLog::record('member.approve', $member['display_name'] ?? (string) $id);
         $this->flash('Key re-approved.');
         redirect('/admin/members');
     }
@@ -100,6 +108,7 @@ class MembersController
             abort(404, 'Member not found.');
         }
         $token = Members::rotate($id);
+        AuditLog::record('member.rotate', $member['display_name']);
         $base = defined('APP_URL') ? APP_URL : '';
         $this->flash("New key for {$member['display_name']}. The old link is dead. New link: {$base}/key/{$token}");
         redirect('/admin/members');

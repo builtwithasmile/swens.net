@@ -9,6 +9,7 @@ use App\Controllers\Admin\AuthController;
 use App\Controllers\Admin\PostsController;
 use App\Controllers\Admin\MediaController;
 use App\Controllers\Admin\MembersController;
+use App\Controllers\Admin\AuditController;
 use App\Middleware\OwnerOnly;
 use App\Middleware\KeyedOnly;
 
@@ -49,6 +50,9 @@ $app->router->group(['middleware' => [OwnerOnly::class]], function ($r) {
     $r->post('/admin/members/{id}/revoke',  [MembersController::class, 'revoke']);
     $r->post('/admin/members/{id}/approve', [MembersController::class, 'approve']);
     $r->post('/admin/members/{id}/rotate',  [MembersController::class, 'rotate']);
+
+    // Audit trail — read-only
+    $r->get('/admin/audit',              [AuditController::class, 'index']);
 
     $r->post('/admin/logout',            [AuthController::class, 'logout']);
 });

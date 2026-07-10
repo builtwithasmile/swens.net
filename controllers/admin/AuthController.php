@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controllers\Admin;
 
+use App\Core\AuditLog;
 use App\Core\Request;
 use App\Core\Response;
 use App\Core\Template;
@@ -71,6 +72,8 @@ class AuthController
 
         session_regenerate_id(true);
         $_SESSION['is_owner'] = true;
+        $_SESSION['last_activity'] = time();
+        AuditLog::record('login');
 
         header('Location: /admin');
         exit;
@@ -83,6 +86,7 @@ class AuthController
         if (!\App\Core\Csrf::check($token)) {
             abort(419, 'Invalid CSRF token.');
         }
+        AuditLog::record('logout');
         session_destroy();
         header('Location: /');
         exit;

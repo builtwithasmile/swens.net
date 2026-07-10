@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controllers\Admin;
 
+use App\Core\AuditLog;
 use App\Core\Request;
 use App\Core\Response;
 use App\Core\Template;
@@ -53,6 +54,7 @@ class PostsController
             return;
         }
         Database::insert('posts', $data);
+        AuditLog::record('post.create', $data['slug']);
         PublicCache::purgeAll();
         redirect('/admin');
     }
@@ -88,6 +90,7 @@ class PostsController
             return;
         }
         Database::update('posts', $data, 'id = :id', ['id' => $id]);
+        AuditLog::record('post.update', $data['slug']);
         PublicCache::purgeAll();
         redirect('/admin');
     }
@@ -96,7 +99,9 @@ class PostsController
     {
         $this->verifyCsrf($request);
         $id = (int) $request->param('id', 0);
+        $post = $this->requirePost($id);
         Database::delete('posts', 'id = ?', [$id]);
+        AuditLog::record('post.delete', $post['slug']);
         PublicCache::purgeAll();
         redirect('/admin');
     }

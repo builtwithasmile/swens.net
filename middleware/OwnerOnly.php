@@ -22,5 +22,9 @@ class OwnerOnly
         if (empty($_SESSION['is_owner'])) {
             abort(404, 'Not Found');
         }
+        if (session_idle_expired((int) config('ADMIN_IDLE_TIMEOUT_SECONDS', 1800))) {
+            session_destroy();
+            abort(404, 'Not Found');
+        }
     }
 }

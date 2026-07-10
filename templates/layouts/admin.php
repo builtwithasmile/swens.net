@@ -32,6 +32,7 @@ tr:hover td{background:#1a1f2e}
   <a href="/admin">Posts</a>
   <a href="/admin/posts/new">+ New Post</a>
   <a href="/admin/members">Members</a>
+  <a href="/admin/audit">Audit</a>
   <span style="flex:1"></span>
   <form method="post" action="/admin/logout" style="margin:0">
     <?= csrf_field() ?>

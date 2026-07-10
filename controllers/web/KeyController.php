@@ -28,6 +28,7 @@ class KeyController
         session_regenerate_id(true);
         $_SESSION['is_keyed']  = true;
         $_SESSION['member_id'] = (int) $member['id'];
+        $_SESSION['last_activity'] = time();
 
         redirect('/inside');
     }

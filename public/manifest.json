@@ -1,0 +1,12 @@
+{
+  "name": "Swens · Josh Swenson",
+  "short_name": "Swens",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#f4efe3",
+  "theme_color": "#16202a",
+  "icons": [
+    { "src": "/assets/favicon.svg", "sizes": "any", "type": "image/svg+xml" },
+    { "src": "/assets/favicon-32.png", "sizes": "32x32", "type": "image/png" }
+  ]
+}

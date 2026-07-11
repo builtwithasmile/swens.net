@@ -55,7 +55,7 @@
         <h3>HotSync</h3>
         <span class="status-pill parked"><!-- TODO-lyra -->Closed — became Selvatec</span>
       </header>
-      <p>My IT company in BC, 2000 to 2022. Closed now. Everything since stands on it.</p>
+      <p>My IT company in BC, 2000 to 2020. Closed now. Everything since stands on it.</p>
     </article>
 
   </div>
@@ -115,9 +115,9 @@
       </div>
 
       <div class="timeline-item">
-        <span class="timeline-range">2000 – 2022</span>
+        <span class="timeline-range">2000 – 2020</span>
         <span class="timeline-name">HotSync</span>
-        <span class="timeline-detail">Twenty-two years of IT in small-town BC. Whatever broke, I fixed it.</span>
+        <span class="timeline-detail">Twenty years of IT in small-town BC. Whatever broke, I fixed it.</span>
       </div>
 
       <div class="timeline-item">

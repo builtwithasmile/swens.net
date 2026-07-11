@@ -648,8 +648,9 @@ body.interior .button.ghost:hover {
 /* ─── 15. HOME — public hub (v3, 2026-07-10) ────────────────────────────── */
 /* One static screen: identity, one line, contact, two exits. No scroll narrative —
    round-table 2026-07-10 chose restraint over the earlier multi-station "ride" (retired,
-   see memory/state.md). Still supersedes §9 CAST / §13 STORY / §14 TEAM (dead — slated
-   for removal, unverified, tracked separately in memory/state.md). */
+   see memory/state.md). The old CAST/STORY/TEAM sections this comment used to flag as
+   dead-pending-removal (2026-07-10 restyle sweep, verified via repo-wide grep) — no
+   .cast/.story/.team selectors or markup exist anywhere in this codebase. Already gone. */
 .ride {
   position: relative;
   /* DNA §3: monochrome — stage black lifting almost imperceptibly toward the end */

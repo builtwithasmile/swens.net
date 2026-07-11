@@ -12,7 +12,7 @@
 
 ## Open loops (carry-forward — surfaced at session start, never blocks a close)
 <!-- One line per loose end: the thing + its single next action. -->
-- DNA restyle sweep: footer wordmark, scroll-lit re-eval, admin dashboard to DNA tokens, dead CAST/STORY/TEAM removal, /office+/gate component reconciliation & copy re-audit — see archived narrative for full scope.
+- Footer contact columns + live Costa Rica clock (DNA §8/§10, JS-based) — deliberately left out of the 2026-07-10 DNA restyle sweep (wordmark shipped, clock did not); build if Josh wants the full footer signature.
 - Rename stale "ride"/`'map'` references in `site-header.php:3-4` and the route-active key literal — cosmetic naming staleness only.
 - Standard-kit gaps: build B4 admin settings UI (needs Josh's config scope first, no settings model exists), wire B5 nightly backup cron (moot until app redeployed), build B6 checkin notifications (low priority, Gate already emails owner).
 
@@ -32,6 +32,33 @@
 <!-- Known-broken or fragile things a future session should not trip over. -->
 
 ## Facts (uncounted — keeper context, shipped-block history, watch notes; never work items)
+- **2026-07-10: DNA restyle sweep closed (app is shelved/undeployed — see 2026-07-09 static-site
+  note — this only affects the app if/when revived).** Footer wordmark: viewport-wide `SWENS`
+  link added above the link list in `site-footer.php` (DNA §8), self-styled inline per that
+  partial's own no-big-CSS-dependency rule; contact columns + live clock left unbuilt (new
+  Open loop). Scroll-lit re-eval: reviewed every current page against "earned specific content
+  to unspool" — none fits (`/office` is structured data, not prose; `/gate`'s bio is Josh's own
+  content call, not mine to restructure); recorded as a deliberate non-implementation in
+  `design/DNA.md` §10, not left as a standing TODO. Admin dashboard: `templates/layouts/admin.php`
+  and all five `templates/pages/admin/*.php` moved off the old ad-hoc blue/dark palette
+  (`#0f1117`/`#2563eb`/etc.) onto real DNA tokens (now links `site.css`, `body class="interior"`
+  for the gallery-white scope, Fragment Mono chrome, pill buttons, `--clay` reserved for
+  destructive/error states only per DNA's "functional signal, never decoration" rule — status
+  dots on the members page went monochrome+clay instead of ad-hoc green/red/amber). Dead
+  CAST/STORY/TEAM: verified via repo-wide grep — no `.cast`/`.story`/`.team` selectors or
+  markup exist anywhere; this was a stale comment in `site.css` (the actual dead code was
+  already gone from an earlier rewrite), comment corrected to stop flagging phantom work.
+  `/office`+`/gate` component reconciliation: added hairline dividers between `/gate`'s
+  paragraph clusters (DNA §4, "structured by hairlines, not boxes") so its density reads
+  closer to `/office`'s structured feel — zero words changed, purely a layout device.
+  Copy re-audit: `/office` checked against the achievement-not-plot policy — passes (no
+  financials/stakes, family mentioned only as a generic co-founder descriptor, no names);
+  found and fixed one real bug in the same pass — `office.php`'s HotSync card + timeline
+  still said "2000 to 2022 / twenty-two years," the wrong pre-correction dates already fixed
+  in `gate.php`/`home.php` on 2026-07-09 but missed here. Now all three agree: 2000–2020,
+  twenty years. `/gate`'s own narrative-voice re-audit (family reference, life-story bio)
+  remains untouched — still Josh's call, not silently rewritten. All 9 touched PHP files
+  passed `php -l`; home/office/gate rendered 200 via local preview with balanced HTML.
 - **2026-07-10: standard-kit B2 (audit trail) + B3 (idle logout) shipped.** B2: new `audit_log` table (`migrations/005_audit_log.sql`, applies on next boot via the idempotent Migrator), `core/AuditLog.php` (never-throws `record()`/`recent()`), wired into `AuthController` (login/logout), `MembersController` (issue/revoke/approve/rotate — now also fetches the member before revoke/approve so the log line has a name, not just an id), and `PostsController` (create/update/delete — `delete()` now 404s on a missing post first, matching `edit()`/`update()`, needed to log a subject). New read-only `/admin/audit` page (`AuditController` + `pages/admin/audit.php`, OwnerOnly-gated) shows the last 200 entries; linked in the admin nav. B3: new `session_idle_expired()` helper in `core/helpers.php` (stamps `$_SESSION['last_activity']`, returns true once the gap exceeds the timeout). Wired into both `OwnerOnly` (30 min default, `ADMIN_IDLE_TIMEOUT_SECONDS`, destroys the session and 404s like any unauthenticated admin hit — never reveals the surface) and `KeyedOnly` (2 hr default, `KEYED_IDLE_TIMEOUT_SECONDS`, drops `is_keyed`/`member_id` and redirects to `/gate`) — gated so the owner previewing `/inside` never gets logged out of `/admin` by the keyed-side clock. `AuthController::consume` and `KeyController::consume` both stamp `last_activity` on login so a fresh session doesn't start "already idle." Both timeouts documented (commented, since `config()` already defaults them) in `config.example.php`. All 12 touched/new PHP files passed `php -l`. Not deployed — the live site is the static page (see 2026-07-09 entry below); this only affects the app if/when it's revived.
 - 2026-07-10: `templates/partials/site-footer.php` gained a fifth "Things I'm mixed up in" entry — Selvatec Software → https://selvatec.ca/own-your-software, blurb Josh's own words (provenance law). Repo-only; the live static page is separate and untouched.
 - **2026-07-09: swens.net LIVE SITE converted to a plain STATIC single page — the PHP app (this repo) is SHELVED, not deployed.** Josh, seeing the full app machinery on the server (`swensnet-app/` + shim + deployed dev files) said the site is simple and should be "just the website, simple, no extras" in `public_html`. Done on the server: captured the rendered home page → hand-cleaned to `public_html/index.html` (dropped ONLY the two now-dead `/office`·`/gate` nav links; everything else pixel-identical — hero, contact, ventures footer), dereferenced the assets symlink into a real `public_html/assets/`, simplified `.htaccess` to static (`DirectoryIndex index.html` + security headers, NO rewrite/front-controller), removed the shim `public_html/index.php`, and deleted `swensnet-app/` + the `swensnet-app-old-20260710/` leftover. `public_html` is now just `index.html`, `assets/`, `.htaccess`, `.well-known/`. `/office` and `/gate` now 404 — their content (companies writeup; personal bio; the working key-request contact form) is NOT on the live site anymore. **REVERSIBILITY:** the entire app is preserved in THIS git repo (nothing deleted from the repo — only the server). To revive the hub later: redeploy the app into `swensnet-app/`, restore the one-line shim, write a fresh server-only `config.php` (`MAIL_FROM=gate@swens.net`, `MAIL_OWNER=builtwithasmile@gmail.com`, a new `SESSION_SECRET`), and point `.htaccess` back at the front controller. The app-related Open loops above (DNA restyle, `/office`·`/gate` audits, admin dashboard sweep, standard-kit gaps, brand-graphics pack) apply ONLY if the app is revived — they do NOT affect the current static site. Verified live: home 200 with real content, CSS + favicon 200, `/office`·`/gate` 404, `public_html` lean.

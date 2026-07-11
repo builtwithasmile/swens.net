@@ -7,30 +7,35 @@
  * memory/state.md) — only the HotSync date error below was fixed (pure factual
  * correction, matches home.php). The family reference and overall narrative voice
  * on this page are a separate, Josh-only content-policy call. Flagged as open loop.
+ * Component reconciliation (2026-07-10 restyle sweep): added hairline dividers between
+ * paragraph clusters — DNA §4 ("index lists are structured by 1px hairlines, not boxes")
+ * — so this page's density matches /office's structured feel without touching any words.
  */
 ?>
 <!-- Section: Who's Swens -->
 <section class="section-pad narrow" style="--accent:var(--gold)">
   <p class="eyebrow">The Gate</p>
   <h1 class="h2-display">Who&rsquo;s Swens?</h1>
+  <div style="display:grid;gap:1.5rem">
   <p><!-- VOICE: plain bio, no cadence (voice.md AI-tells ban). Facts: film credits, HotSync 2000-2020 (corrected 2026-07-10, was wrongly 2000-2022 here), Guanacaste, KillerBud canon (swens-memory fact pack 2026-06-12). -->
     Short version: I made the computers on TV look like they were doing something. The X-Files, Stargate SG-1, shows like that. When a console beeped like it meant it, that was usually my desk. Somebody also had to keep the real machines alive between takes, and that part quietly became the career.
   </p>
-  <p>
+  <p style="border-top:1px solid var(--line);padding-top:1.5rem">
     In 2000 I went home to small-town BC and started HotSync, the town&rsquo;s computer company. Twenty years of that. In 2022 we packed the family up and moved to Guanacaste, Costa Rica.
   </p>
   <p>
     Somewhere in there I started drawing myself as a cartoon with a bud for a head. One eye locked on, one eye somewhere else. People who know me say the eyes are accurate. The cartoon got friends, the friends got jobs, and these days a small crew of them helps me build everything you see here.
   </p>
-  <p>
+  <p style="border-top:1px solid var(--line);padding-top:1.5rem">
     This site is me getting my stuff back. There are versions of me scattered across old business sites, dead Facebook pages, and folders of photos nobody opens. swens.net is where the pieces come back under one roof: one quiet spot that&rsquo;s actually mine. Not a profile, not a brand. A place.
   </p>
   <p>
     The outside is just the vibe. If you know me, there&rsquo;s a door, and the real version is on the other side of it: where I actually am, what I&rsquo;m building, the long version of the story. If you don&rsquo;t, that&rsquo;s alright too. It won&rsquo;t sell you anything.
   </p>
-  <p>
+  <p style="border-top:1px solid var(--line);padding-top:1.5rem">
     The business side is in <a href="/office">The Office</a>. Everything else needs a key.
   </p>
+  </div>
 </section>
 
 <!-- Section: Request a key -->

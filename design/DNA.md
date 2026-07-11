@@ -95,6 +95,18 @@ replace.
   with earned specific content to unspool, e.g. a future `/office` pass, not force it onto
   home. `/office` destinations as SELECTED PROJECTS rows; interiors = light gallery pages;
   footer = giant wordmark + contact columns + clock.
+- **Scroll-lit re-eval, 2026-07-10 restyle sweep — reviewed, still deliberately unclaimed.**
+  Checked every current page against "earned specific content to unspool": `/office` is
+  structured business data (cards/shelf/timeline rows), not a flowing statement — doesn't
+  fit. `/gate`'s bio prose is the closest shape, but its content is explicitly Josh's own
+  call to rewrite (see memory/state.md), not mine to restructure into a scroll device.
+  `/home` was already ruled out by name in this note. Conclusion: no page currently earns
+  it. Stays unclaimed until either `/office` grows a written statement-style intro or a new
+  page is added — not a standing TODO to force, a decision to leave alone.
+- Footer wordmark shipped 2026-07-10 (`SWENS`, viewport-wide, self-styled inline in
+  `site-footer.php` per that partial's own no-big-CSS-dependency rule). Contact columns +
+  live Costa Rica clock from this same list are still unbuilt — clock needs JS and wasn't
+  in scope for this pass.
 - Next: `/build restyle to DNA` migrates section by section.
 
 ## References

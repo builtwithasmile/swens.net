@@ -5,7 +5,7 @@ $v       = fn(string $k, string $d = '') => e($post[$k] ?? $d);
 ?>
 <h1 style="font-size:1.25rem;margin-bottom:1.5rem"><?= $isEdit ? 'Edit Post' : 'New Post' ?></h1>
 <?php if ($errors ?? []): ?>
-<div class="flash" style="background:#3b1219;border-color:#7f1d1d">
+<div class="flash" style="border-color:var(--clay);color:var(--clay)">
 <?php foreach ($errors as $err): ?><div><?= e($err) ?></div><?php endforeach ?>
 </div>
 <?php endif ?>
@@ -56,6 +56,6 @@ $v       = fn(string $k, string $d = '') => e($post[$k] ?? $d);
   </div>
   <div style="display:flex;gap:1rem;align-items:center">
     <button type="submit" class="btn btn-primary"><?= $isEdit ? 'Update' : 'Publish' ?></button>
-    <a href="/admin" style="color:#64748b;font-size:.875rem">Cancel</a>
+    <a href="/admin" style="color:var(--muted);font-size:.875rem">Cancel</a>
   </div>
 </form>

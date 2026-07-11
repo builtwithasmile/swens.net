@@ -5,9 +5,13 @@
  * (provenance law). Already-public brands only; no real-world detail (rail 2).
  * Shown on public pages; the layout omits it inside the keyed room.
  * Self-contained styling on :root tokens — no dependency on the big CSS file.
+ * DNA §8 signature device: the viewport-wide ExtraBold wordmark sits just above the
+ * link list, self-styled inline to match this partial's own no-big-CSS-dependency rule.
  */
 ?>
-<footer class="brand-footer" style="border-top:1px solid var(--line);margin-top:4rem;padding:2.5rem 1.5rem">
+<div style="border-top:1px solid var(--line);margin-top:4rem">
+  <a href="/" aria-label="swens.net — home" style="display:block;text-align:center;padding:2rem clamp(1rem,4vw,2rem) 0;font-family:var(--font-sans);font-weight:800;letter-spacing:-.05em;line-height:.85;font-size:clamp(3rem,16vw,14rem);color:var(--text);text-decoration:none">SWENS</a>
+<footer class="brand-footer" style="padding:1.5rem 1.5rem 2.5rem">
   <div style="max-width:62rem;margin:0 auto">
     <p class="eyebrow" style="margin:0 0 .35rem">Things I'm mixed up in</p>
     <p style="margin:0 0 1.5rem;color:var(--muted);font-size:.9375rem;max-width:48ch">Light touch. If you want the real story behind any of these, that's on the other side of the door.</p>
@@ -36,3 +40,4 @@
     </ul>
   </div>
 </footer>
+</div>

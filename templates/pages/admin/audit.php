@@ -10,14 +10,14 @@
 <tbody>
 <?php foreach ($log ?? [] as $row): ?>
 <tr>
-  <td style="color:#94a3b8"><?= e($row['created_at']) ?></td>
+  <td style="color:var(--muted)"><?= e($row['created_at']) ?></td>
   <td><?= e($row['action']) ?></td>
-  <td style="color:#94a3b8"><?= e($row['subject'] ?? '') ?></td>
-  <td style="color:#94a3b8"><?= e($row['ip'] ?? '') ?></td>
+  <td style="color:var(--muted)"><?= e($row['subject'] ?? '') ?></td>
+  <td style="color:var(--muted)"><?= e($row['ip'] ?? '') ?></td>
 </tr>
 <?php endforeach ?>
 <?php if (empty($log)): ?>
-<tr><td colspan="4" style="color:#64748b;text-align:center;padding:2rem">No activity recorded yet.</td></tr>
+<tr><td colspan="4" style="color:var(--muted);text-align:center;padding:2rem">No activity recorded yet.</td></tr>
 <?php endif ?>
 </tbody>
 </table>

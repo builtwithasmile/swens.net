@@ -15,7 +15,7 @@
   <td><?= e($p['kind']) ?></td>
   <td><?= e(substr($p['created_at'], 0, 10)) ?></td>
   <td style="display:flex;gap:.5rem">
-    <a href="/admin/posts/<?= (int)$p['id'] ?>/edit" class="btn btn-sm" style="background:#1a1f2e;color:#e8edf4">Edit</a>
+    <a href="/admin/posts/<?= (int)$p['id'] ?>/edit" class="btn btn-sm">Edit</a>
     <form method="post" action="/admin/posts/<?= (int)$p['id'] ?>/delete" style="margin:0">
       <?= $csrf ?? '' ?>
       <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Delete?')">Del</button>
@@ -24,7 +24,7 @@
 </tr>
 <?php endforeach ?>
 <?php if (empty($posts)): ?>
-<tr><td colspan="6" style="color:#64748b;text-align:center;padding:2rem">No posts yet.</td></tr>
+<tr><td colspan="6" style="color:var(--muted);text-align:center;padding:2rem">No posts yet.</td></tr>
 <?php endif ?>
 </tbody>
 </table>

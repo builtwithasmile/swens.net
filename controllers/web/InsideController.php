@@ -96,10 +96,31 @@ class InsideController
             'mood'      => ($mood !== '' ? $mood : null),
         ]);
 
+        $this->notifyOwner($memberId, $body);
+
         $response->redirect('/inside#board');
     }
 
     // -------------------------------------------------------------------------
+
+    /**
+     * Best-effort owner email on a new board check-in (send_mail() never throws;
+     * a mail failure must never break the check-in flow that already succeeded).
+     */
+    private function notifyOwner(int $memberId, string $body): void
+    {
+        if (!defined('MAIL_OWNER') || MAIL_OWNER === '' || !defined('MAIL_FROM')) {
+            return;
+        }
+        $member = Members::byId($memberId);
+        $name   = $member['display_name'] ?? 'A member';
+        send_mail(
+            MAIL_OWNER,
+            '[swens.net] ' . $name . ' checked in',
+            $name . " checked in on the board:\n\n" . $body,
+            ['From' => MAIL_FROM]
+        );
+    }
 
     /**
      * Josh's seeded keyed posts, grouped by kind and rendered to HTML.

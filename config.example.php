@@ -30,3 +30,9 @@ define('GATE_MAX_PER_DAY_GLOBAL', 20);
 // define('DB_NAME', ''); define('DB_USER', ''); define('DB_PASS', '');
 // define('ADMIN_OWNER_EMAIL', '');         // the single allowlisted admin email
 // define('APP_KEY', '');                   // bin2hex(random_bytes(32)); HMAC key for magic links (alias SESSION_SECRET)
+
+// ---- Nightly backup (bin/backup.php, standard-kit B5) — uncomment once a cron is registered ----
+// define('BACKUP_DIR', '');                // OUTSIDE the docroot, e.g. /home/swensnet/backups
+// define('BACKUP_SECONDARY_DIR', '');      // optional second copy location
+// define('BACKUP_RETENTION_DAYS', 30);
+// define('MYSQLDUMP_BIN', 'mysqldump');    // full path if not on PATH, e.g. /usr/bin/mysqldump

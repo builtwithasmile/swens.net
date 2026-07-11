@@ -12,7 +12,7 @@
 
 ## Open loops (carry-forward — surfaced at session start, never blocks a close)
 <!-- One line per loose end: the thing + its single next action. -->
-- Standard-kit gaps: build B4 admin settings UI (needs Josh's config scope first, no settings model exists), wire B5 nightly backup cron (moot until app redeployed), build B6 checkin notifications (low priority, Gate already emails owner).
+- Standard-kit gaps — B4 admin settings UI still open: **genuinely blocked**, needs Josh to define what's configurable before a settings model/table is worth building (inventing a whitelist would be scope invention, not a gap-fill). B5 and B6 done this session — see Facts.
 - Pre-existing dirty tree found 2026-07-10 (this session, not this session's edits): `controllers/web/SiteController.php`, `templates/layouts/site.php`, `templates/partials/site-header.php` are deleted from the working directory but not staged/committed — git still tracks them at HEAD. Left untouched per instruction (not this session's work); needs Josh to say whether that deletion was intentional (a restyle/route reshape mid-flight?) or a local accident to restore.
 
 ## Recently resolved (archive — uncounted)
@@ -32,6 +32,25 @@
 <!-- Known-broken or fragile things a future session should not trip over. -->
 
 ## Facts (uncounted — keeper context, shipped-block history, watch notes; never work items)
+- **2026-07-10 (later session): standard-kit B5 (nightly backup) + B6 (checkin notifications) shipped.**
+  B5: `services/BackupService.php` + `bin/backup.php`, ported from OnShift's proven pattern
+  (proc_open + mysqldump array-form, no shell; password via `MYSQL_PWD` env, never argv; streamed
+  straight into gzip so a big dump never has to fit in the 128M memory limit; MariaDB/MySQL-safe
+  flag intersection; prune-by-mtime that never deletes the single newest file). New optional
+  config block in `config.example.php` (`BACKUP_DIR`/`BACKUP_SECONDARY_DIR`/`BACKUP_RETENTION_DAYS`/
+  `MYSQLDUMP_BIN`, all commented out). Verified end-to-end against the local dev DB (temporary
+  constants added to `config.local.php`, real gzip dump of `swensnet_local` produced and inspected,
+  then removed — `config.local.php` restored byte-identical, confirmed gitignored throughout).
+  NOT registered as a live cron — the app is shelved (static site is live, no production DB exists
+  yet); the cron line is documented in `bin/backup.php`'s header for whoever redeploys the app.
+  B6: `InsideController::checkin()` now emails `MAIL_OWNER` (best-effort, same never-block pattern
+  as `send_mail()` itself) when a keyed member posts to the board — reuses the real, already-built
+  check-in feature (`/inside/checkin`, `checkins` table), not an invented notification type.
+  B4 (admin settings UI) intentionally NOT built — no settings model/table exists, and per the
+  standard-kit spec the screen needs a per-repo whitelist of editable keys, which is a product
+  decision that has to be Josh's, not invented. All 4 touched/new PHP files passed `php -l`.
+  Pre-existing dirty tree (`SiteController.php`/`site.php`/`site-header.php` deletions, open loop
+  above) found untouched, confirmed still not staged by this session's `git status`.
 - **2026-07-10: footer contact columns + live Costa Rica clock shipped**, closing the last
   piece of the DNA §8/§10 footer signature (wordmark already shipped earlier the same day).
   `templates/partials/site-footer.php` gained a 3-column contact row (Say hello/email,

@@ -105,8 +105,13 @@ replace.
   page is added — not a standing TODO to force, a decision to leave alone.
 - Footer wordmark shipped 2026-07-10 (`SWENS`, viewport-wide, self-styled inline in
   `site-footer.php` per that partial's own no-big-CSS-dependency rule). Contact columns +
-  live Costa Rica clock from this same list are still unbuilt — clock needs JS and wasn't
-  in scope for this pass.
+  live Costa Rica clock shipped 2026-07-10 (same partial, same self-styled-inline rule):
+  a three-column contact row (email, Canada/Costa Rica location, live clock) above the
+  business links, sourced entirely from facts already public elsewhere on the site
+  (`home.php`'s mailto, its Canada/Costa Rica line) — no new personal detail invented.
+  The clock renders server-side first (readable with JS off, DNA §7) and ticks client-side
+  via a small inline `<script>` (`Intl.DateTimeFormat`, `America/Costa_Rica`, 30s interval).
+  Full footer signature (wordmark + contact columns + clock) is now complete.
 - Next: `/build restyle to DNA` migrates section by section.
 
 ## References

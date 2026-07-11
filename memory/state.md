@@ -12,8 +12,8 @@
 
 ## Open loops (carry-forward — surfaced at session start, never blocks a close)
 <!-- One line per loose end: the thing + its single next action. -->
-- Footer contact columns + live Costa Rica clock (DNA §8/§10, JS-based) — deliberately left out of the 2026-07-10 DNA restyle sweep (wordmark shipped, clock did not); build if Josh wants the full footer signature.
 - Standard-kit gaps: build B4 admin settings UI (needs Josh's config scope first, no settings model exists), wire B5 nightly backup cron (moot until app redeployed), build B6 checkin notifications (low priority, Gate already emails owner).
+- Pre-existing dirty tree found 2026-07-10 (this session, not this session's edits): `controllers/web/SiteController.php`, `templates/layouts/site.php`, `templates/partials/site-header.php` are deleted from the working directory but not staged/committed — git still tracks them at HEAD. Left untouched per instruction (not this session's work); needs Josh to say whether that deletion was intentional (a restyle/route reshape mid-flight?) or a local accident to restore.
 
 ## Recently resolved (archive — uncounted)
 - [x] Stale `"ride"`/`'map'` naming — **DONE 2026-07-10**: `site-header.php:3-4` comment and the route-active key literal renamed `'map'` → `'home'` (matches `SiteController::home()`/`routes.php` and the existing `'office'`/`'gate'`/`'inside'` key pattern) across `SiteController.php:18`, `templates/layouts/site.php:25-27` (incl. the adjacent RT#3 comment), and the header comment. Cosmetic only — same equality checks, same rendered output, `php -l` clean on all three.
@@ -32,6 +32,17 @@
 <!-- Known-broken or fragile things a future session should not trip over. -->
 
 ## Facts (uncounted — keeper context, shipped-block history, watch notes; never work items)
+- **2026-07-10: footer contact columns + live Costa Rica clock shipped**, closing the last
+  piece of the DNA §8/§10 footer signature (wordmark already shipped earlier the same day).
+  `templates/partials/site-footer.php` gained a 3-column contact row (Say hello/email,
+  Based/Canada·Costa Rica, Local time/live clock) above the business links, self-styled
+  inline per the partial's own no-big-CSS-dependency rule — no new personal facts invented,
+  reused the already-public `info@swens.net` and Canada/Costa Rica line from `home.php`.
+  Clock renders server-side (PHP `DateTime` in `America/Costa_Rica`, readable with JS off)
+  and ticks client-side via a small inline script (`Intl.DateTimeFormat`, 30s interval,
+  "CST" label — Costa Rica has no DST). `php -l` clean; rendered the partial standalone
+  to confirm no runtime errors. `design/DNA.md` §10 updated to mark the footer complete.
+  Not deployed — app is still shelved per the 2026-07-09 static-site note.
 - **2026-07-10: DNA restyle sweep closed (app is shelved/undeployed — see 2026-07-09 static-site
   note — this only affects the app if/when revived).** Footer wordmark: viewport-wide `SWENS`
   link added above the link list in `site-footer.php` (DNA §8), self-styled inline per that

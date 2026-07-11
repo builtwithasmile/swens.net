@@ -7,12 +7,32 @@
  * Self-contained styling on :root tokens — no dependency on the big CSS file.
  * DNA §8 signature device: the viewport-wide ExtraBold wordmark sits just above the
  * link list, self-styled inline to match this partial's own no-big-CSS-dependency rule.
+ * DNA §8/§10 contact row: email + location already established elsewhere on the site
+ * (home.php's mailto, the Canada/Costa Rica positioning line) — nothing new invented
+ * here, just surfaced in the footer. The Costa Rica clock renders server-side first
+ * (readable with JS off, per DNA §7) and a small inline script ticks it client-side;
+ * Costa Rica has no DST, so "CST" is correct year-round.
  */
+$crNow = new DateTime('now', new DateTimeZone('America/Costa_Rica'));
 ?>
 <div style="border-top:1px solid var(--line);margin-top:4rem">
   <a href="/" aria-label="swens.net — home" style="display:block;text-align:center;padding:2rem clamp(1rem,4vw,2rem) 0;font-family:var(--font-sans);font-weight:800;letter-spacing:-.05em;line-height:.85;font-size:clamp(3rem,16vw,14rem);color:var(--text);text-decoration:none">SWENS</a>
 <footer class="brand-footer" style="padding:1.5rem 1.5rem 2.5rem">
   <div style="max-width:62rem;margin:0 auto">
+    <div style="display:grid;gap:1.5rem;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));margin:0 0 2.5rem;padding-bottom:2rem;border-bottom:1px solid var(--line)">
+      <div>
+        <p class="eyebrow" style="margin:0 0 .5rem">Say hello</p>
+        <a href="mailto:info@swens.net" style="font-family:var(--font-mono);font-size:.9375rem;color:var(--text);text-decoration:none">info@swens.net</a>
+      </div>
+      <div>
+        <p class="eyebrow" style="margin:0 0 .5rem">Based</p>
+        <p style="margin:0;font-family:var(--font-mono);font-size:.9375rem;color:var(--muted)">Canada &middot; Costa Rica</p>
+      </div>
+      <div>
+        <p class="eyebrow" style="margin:0 0 .5rem">Local time, Costa Rica</p>
+        <p style="margin:0;font-family:var(--font-mono);font-size:.9375rem;color:var(--muted)"><time id="cr-clock" datetime="<?= $crNow->format('H:i') ?>"><?= $crNow->format('H:i') ?> CST</time></p>
+      </div>
+    </div>
     <p class="eyebrow" style="margin:0 0 .35rem">Things I'm mixed up in</p>
     <p style="margin:0 0 1.5rem;color:var(--muted);font-size:.9375rem;max-width:48ch">Light touch. If you want the real story behind any of these, that's on the other side of the door.</p>
     <ul style="list-style:none;padding:0;margin:0;display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))">
@@ -41,3 +61,13 @@
   </div>
 </footer>
 </div>
+<script>
+(function () {
+  var el = document.getElementById('cr-clock');
+  if (!el || !window.Intl) return;
+  var fmt = new Intl.DateTimeFormat('en-US', { timeZone: 'America/Costa_Rica', hour: '2-digit', minute: '2-digit', hour12: false });
+  function tick() { el.textContent = fmt.format(new Date()) + ' CST'; }
+  tick();
+  setInterval(tick, 30000);
+})();
+</script>

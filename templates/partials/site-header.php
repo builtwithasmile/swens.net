@@ -1,7 +1,7 @@
 <?php
 /**
- * Interior walk-back bar. Shown on every page except the home "ride"
- * (the layout skips it when $active === 'map'). Left: back to swens.net.
+ * Interior walk-back bar. Shown on every page except the home page
+ * (the layout skips it when $active === 'home'). Left: back to swens.net.
  * Right: where you are. No menu, by design.
  */
 $here = \App\Services\Buildings::ALL[$active ?? '']['name'] ?? 'swens.net';

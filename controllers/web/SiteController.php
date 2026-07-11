@@ -15,7 +15,7 @@ class SiteController
         $html = Template::render('pages/home', [
             'title'     => 'Swens · Josh Swenson',
             'meta_desc' => 'I\'m Josh. Online I go by Swens. IT, retail, and hospitality, built and run out of Canada and Costa Rica.',
-            'active'    => 'map',
+            'active'    => 'home',
         ], 'site');
 
         $response->html($html);

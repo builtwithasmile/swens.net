@@ -22,9 +22,9 @@
   ?>
   <link rel="stylesheet" href="/assets/css/site.css?v=<?= $ver ?>">
 </head>
-<body<?= ($active ?? '') !== 'map' ? ' class="interior"' : '' ?>>
-<?php /* RT#3: the map IS the interface — no chrome on the map itself; interior pages get only the walk-back bar. Footer is absorbed into the map's deed line. */ ?>
-<?php if (($active ?? '') !== 'map'): ?>
+<body<?= ($active ?? '') !== 'home' ? ' class="interior"' : '' ?>>
+<?php /* RT#3: home IS the interface — no chrome on the home page itself; interior pages get only the walk-back bar. Footer is absorbed into home's deed line. */ ?>
+<?php if (($active ?? '') !== 'home'): ?>
 <?= partial('partials/site-header', ['active' => $active ?? '']) ?>
 <?php endif; ?>
 <main>

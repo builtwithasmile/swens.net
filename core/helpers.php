@@ -132,6 +132,6 @@ function send_mail(string $to, string $subject, string $body, string|array $head
     // reads as a spam signal at strict receivers (e.g. Gmail/Workspace), even
     // with SPF/DKIM/DMARC otherwise correct (crossroads-dd 2026-07-14: password
     // reset mail() reported success but was never seen by the recipient).
-    $envelopeFrom = defined('MAIL_FROM') ? '-f' . MAIL_FROM : '';
+    $envelopeFrom = (defined('MAIL_FROM') && MAIL_FROM !== '') ? '-f' . MAIL_FROM : '';
     return @mail($to, $subject, $body, $headerString, $envelopeFrom);
 }

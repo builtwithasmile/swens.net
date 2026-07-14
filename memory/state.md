@@ -32,6 +32,7 @@
 <!-- Known-broken or fragile things a future session should not trip over. -->
 
 ## Facts (uncounted — keeper context, shipped-block history, watch notes; never work items)
+- **Mail deliverability fix — repo-only, NOT deployed (2026-07-14).** `core/helpers.php::send_mail()` (this repo's own hand-rolled variant, not template-managed) called `mail()` with no envelope-sender — same fix applied here as the rest of the fleet, plus a follow-up empty-`MAIL_FROM` guard. Not deployed: the app is SHELVED per the 2026-07-09 static-site conversion (live site is a plain static page; `.cpanel.yml` deploy is explicitly disabled). Applies only if/when the app is revived.
 - **2026-07-10 (later session): standard-kit B5 (nightly backup) + B6 (checkin notifications) shipped.**
   B5: `services/BackupService.php` + `bin/backup.php`, ported from OnShift's proven pattern
   (proc_open + mysqldump array-form, no shell; password via `MYSQL_PWD` env, never argv; streamed

@@ -128,5 +128,10 @@ function send_mail(string $to, string $subject, string $body, string|array $head
         return false;
     }
 
-    return @mail($to, $subject, $body, $headerString);
+    // Envelope-sender (-f) must match MAIL_FROM or the header/envelope mismatch
+    // reads as a spam signal at strict receivers (e.g. Gmail/Workspace), even
+    // with SPF/DKIM/DMARC otherwise correct (crossroads-dd 2026-07-14: password
+    // reset mail() reported success but was never seen by the recipient).
+    $envelopeFrom = defined('MAIL_FROM') ? '-f' . MAIL_FROM : '';
+    return @mail($to, $subject, $body, $headerString, $envelopeFrom);
 }

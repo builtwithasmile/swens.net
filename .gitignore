@@ -8,3 +8,13 @@ Thumbs.db
 
 # Runtime — app/installer create these on demand (logs, page cache, rate-limit, lock)
 /storage/
+
+# Host cruft — files that don't belong but keep collecting (Josh, 2026-07-21)
+error_log
+php_errorlog
+*.bak
+*.bak-*
+*.orig
+*~
+*.swp
+.htaccess.bak*

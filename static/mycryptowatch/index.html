@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Crypto Watch</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="/assets/css/site.css">
+<style>
+  .cw-table-wrap { overflow-x: auto; margin-top: 28px; }
+  .cw-table { width: 100%; border-collapse: collapse; font-size: 15px; }
+  .cw-table th { text-align: left; font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 400; padding: 0 12px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  .cw-table td { padding: 14px 12px; border-bottom: 1px solid var(--line); vertical-align: middle; white-space: nowrap; }
+  .cw-table th:not(:first-child), .cw-table td:not(:first-child) { text-align: right; }
+  .cw-rank { color: var(--muted); font-family: var(--font-mono); font-size: 13px; }
+  .cw-coin { display: flex; align-items: center; gap: 10px; }
+  .cw-coin img { width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0; }
+  .cw-symbol { color: var(--muted); text-transform: uppercase; font-size: 12px; }
+  .cw-change { font-family: var(--font-mono); font-size: 13px; }
+  .cw-refresh { color: var(--muted); font-size: 13px; text-decoration: underline; text-underline-offset: 3px; background: none; border: none; cursor: pointer; font: inherit; padding: 0; }
+  @media (max-width: 480px) {
+    .cw-table { font-size: 13px; }
+    .cw-table th, .cw-table td { padding: 10px 8px; }
+    .cw-symbol { display: none; }
+  }
+</style>
+</head>
+<body class="interior">
+<section class="section-pad narrow">
+  <p class="eyebrow">Crypto Watch</p>
+  <h1 class="h2-display">Top 10 by market cap</h1>
+  <p class="lead">
+    <span id="cw-updated">Loading…</span> ·
+    <button type="button" class="cw-refresh" onclick="location.reload()">↻ refresh</button>
+  </p>
+  <div id="cw-body"></div>
+</section>
+<script>
+(function () {
+  var body = document.getElementById('cw-body');
+  var updated = document.getElementById('cw-updated');
+
+  function fmtPrice(n) {
+    var dp = n >= 1 ? 2 : (n >= 0.01 ? 4 : 6);
+    return '$' + n.toLocaleString('en-CA', { minimumFractionDigits: dp, maximumFractionDigits: dp });
+  }
+
+  fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=cad&order=market_cap_desc&per_page=10&page=1&price_change_percentage=24h', { cache: 'no-store' })
+    .then(function (r) { if (!r.ok) throw new Error('bad status'); return r.json(); })
+    .then(function (coins) {
+      updated.textContent = 'Updated ' + new Date().toLocaleString('en-CA');
+      var rows = coins.map(function (c, i) {
+        var chg = c.price_change_percentage_24h || 0;
+        var arrow = chg >= 0 ? '▲' : '▼';
+        return '<tr>' +
+          '<td class="cw-rank">' + (i + 1) + '</td>' +
+          '<td><div class="cw-coin">' +
+            (c.image ? '<img src="' + c.image + '" alt="">' : '') +
+            '<span>' + c.name + '</span>' +
+            '<span class="cw-symbol">' + c.symbol + '</span>' +
+          '</div></td>' +
+          '<td>' + fmtPrice(c.current_price || 0) + '</td>' +
+          '<td class="cw-change">' + arrow + ' ' + Math.abs(chg).toFixed(2) + '%</td>' +
+        '</tr>';
+      }).join('');
+      body.innerHTML =
+        '<div class="cw-table-wrap"><table class="cw-table"><thead><tr>' +
+        '<th>#</th><th>Coin</th><th>Price (CAD)</th><th>24h</th>' +
+        '</tr></thead><tbody>' + rows + '</tbody></table></div>';
+    })
+    .catch(function () {
+      updated.textContent = 'Updated —';
+      body.innerHTML = '<p class="lead">Prices are unavailable right now — reload in a minute.</p>';
+    });
+})();
+</script>
+</body>
+</html>

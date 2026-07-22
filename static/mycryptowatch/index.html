@@ -7,34 +7,36 @@
 <meta name="robots" content="noindex">
 <link rel="stylesheet" href="/assets/css/site.css">
 <style>
-  .cw-table-wrap { overflow-x: auto; margin-top: 28px; }
-  .cw-table { width: 100%; border-collapse: collapse; font-size: 15px; }
-  .cw-table th { text-align: left; font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 400; padding: 0 12px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
-  .cw-table td { padding: 14px 12px; border-bottom: 1px solid var(--line); vertical-align: middle; white-space: nowrap; }
+  .cw-page { max-width: 640px; margin: 0 auto; padding: 20px 16px 40px; }
+  .cw-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+  .cw-head h1 { font-family: var(--font-sans); font-size: 17px; font-weight: 700; letter-spacing: -.01em; line-height: 1.2; }
+  .cw-meta { font-size: 12px; color: var(--muted); }
+  .cw-table-wrap { overflow-x: auto; }
+  .cw-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .cw-table th { text-align: left; font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 400; padding: 0 8px 8px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  .cw-table td { padding: 10px 8px; border-bottom: 1px solid var(--line); vertical-align: middle; white-space: nowrap; }
   .cw-table th:not(:first-child), .cw-table td:not(:first-child) { text-align: right; }
-  .cw-rank { color: var(--muted); font-family: var(--font-mono); font-size: 13px; }
-  .cw-coin { display: flex; align-items: center; gap: 10px; }
-  .cw-coin img { width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0; }
-  .cw-symbol { color: var(--muted); text-transform: uppercase; font-size: 12px; }
-  .cw-change { font-family: var(--font-mono); font-size: 13px; }
-  .cw-refresh { color: var(--muted); font-size: 13px; text-decoration: underline; text-underline-offset: 3px; background: none; border: none; cursor: pointer; font: inherit; padding: 0; }
-  @media (max-width: 480px) {
-    .cw-table { font-size: 13px; }
-    .cw-table th, .cw-table td { padding: 10px 8px; }
+  .cw-rank { color: var(--muted); font-family: var(--font-mono); font-size: 12px; }
+  .cw-coin { display: flex; align-items: center; gap: 8px; }
+  .cw-coin img { width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0; }
+  .cw-symbol { color: var(--muted); text-transform: uppercase; font-size: 11px; }
+  .cw-change { font-family: var(--font-mono); font-size: 12px; }
+  .cw-refresh { color: var(--muted); font-size: 12px; text-decoration: underline; text-underline-offset: 3px; background: none; border: none; cursor: pointer; font: inherit; padding: 0; white-space: nowrap; }
+  .cw-empty { color: var(--muted); font-size: 13px; }
+  @media (max-width: 400px) {
     .cw-symbol { display: none; }
+    .cw-coin img { width: 16px; height: 16px; }
   }
 </style>
 </head>
-<body class="interior">
-<section class="section-pad narrow">
-  <p class="eyebrow">Crypto Watch</p>
-  <h1 class="h2-display">Top 10 by market cap</h1>
-  <p class="lead">
-    <span id="cw-updated">Loading…</span> ·
-    <button type="button" class="cw-refresh" onclick="location.reload()">↻ refresh</button>
-  </p>
+<body>
+<div class="cw-page">
+  <div class="cw-head">
+    <h1>Crypto Watch</h1>
+    <span class="cw-meta"><span id="cw-updated">Loading…</span> · <button type="button" class="cw-refresh" onclick="location.reload()">↻ refresh</button></span>
+  </div>
   <div id="cw-body"></div>
-</section>
+</div>
 <script>
 (function () {
   var body = document.getElementById('cw-body');
@@ -52,7 +54,10 @@
   }
 
   fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=cad&order=market_cap_desc&per_page=10&page=1&price_change_percentage=24h', { cache: 'no-store' })
-    .then(function (r) { if (!r.ok) throw new Error('bad status'); return r.json(); })
+    .then(function (r) {
+      if (!r.ok) throw new Error(r.status === 429 ? 'rate-limited' : 'bad status');
+      return r.json();
+    })
     .then(function (coins) {
       updated.textContent = 'Updated ' + new Date().toLocaleString('en-CA');
       var rows = coins.map(function (c, i) {
@@ -74,9 +79,11 @@
         '<th>#</th><th>Coin</th><th>Price (CAD)</th><th>24h</th>' +
         '</tr></thead><tbody>' + rows + '</tbody></table></div>';
     })
-    .catch(function () {
+    .catch(function (e) {
       updated.textContent = 'Updated —';
-      body.innerHTML = '<p class="lead">Prices are unavailable right now — reload in a minute.</p>';
+      body.innerHTML = '<p class="cw-empty">' +
+        (e && e.message === 'rate-limited' ? 'Too many reloads — wait a minute and try again.' : 'Prices are unavailable right now — reload in a minute.') +
+        '</p>';
     });
 })();
 </script>

@@ -5,6 +5,7 @@ use App\Controllers\Web\SiteController;
 use App\Controllers\Web\GateController;
 use App\Controllers\Web\KeyController;
 use App\Controllers\Web\InsideController;
+use App\Controllers\Web\CryptoWatchController;
 use App\Controllers\Admin\AuthController;
 use App\Controllers\Admin\PostsController;
 use App\Controllers\Admin\MediaController;
@@ -18,6 +19,7 @@ $app->router->get('/',       [SiteController::class, 'home']);
 $app->router->get('/office', [SiteController::class, 'office']);
 $app->router->get('/gate',   [GateController::class, 'show']);
 $app->router->post('/gate',  [GateController::class, 'submit']);
+$app->router->get('/mycryptowatch', [CryptoWatchController::class, 'index']);
 
 // --- Keyed visitor key (no middleware: this IS the door) ---
 // One segment, registered before the two-segment permalink catch-all below.

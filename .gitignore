@@ -5,6 +5,7 @@ config.php
 node_modules/
 .DS_Store
 Thumbs.db
+.claude/launch.json
 
 # Runtime — app/installer create these on demand (logs, page cache, rate-limit, lock)
 /storage/

@@ -10,12 +10,14 @@ declare(strict_types=1);
  * just the CLI wiring (boot, exit code, owner alert).
  *
  * Not yet registered as a live cron: the app is currently shelved (the live
- * site is a static page — see memory/state.md), so there is no production DB
- * to back up. Register once the app is redeployed with a DB:
+ * site is a hand-placed static page on the OVH/CloudPanel box — see
+ * memory/state.md), so there is no production DB to back up. Register once
+ * the app is redeployed with a DB, via `sudo /usr/local/sbin/site-cron.sh add`
+ * (never a raw crontab/cPanel-UI edit; see swens-server docs/knowledge/
+ * site-provisioning-standard.md), site user `swens`:
  *
- *   15 2 * * * /usr/local/bin/ea-php83 /home/swensnet/swensnet-app/bin/backup.php >> /home/swensnet/swensnet-app/storage/logs/app.log 2>&1
- *
- * (adjust the php path to the one in cPanel > Select PHP Version)
+ *   sudo /usr/local/sbin/site-cron.sh add swens.net '15 2 * * *' \
+ *     '/usr/bin/php8.3 /home/swens/htdocs/swens.net/bin/backup.php >> /home/swens/htdocs/swens.net/storage/logs/app.log 2>&1'
  *
  * Exit code is 0 on success and 1 on any failure, so cron's own MAILTO also
  * catches a failure even if the app's mail() alert cannot go out.

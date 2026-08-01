@@ -70,21 +70,18 @@ const VOD_ENTROPY_TOKEN_GLOB = '#[A-Za-z0-9+/_=-]{20,}#';
 
 // Bits/char below which a charset-matching token is natural-language/path-shaped, not a
 // secret. Measured 2026-08-01 against real fixtures: hyphenated prose and repo paths
-// topped out at 4.24 bits/char (digit-bearing prose) even after excluding path-shaped
-// tokens below; random base64/mixed tokens of the same length ran 4.26-4.75, and the
-// original secret-shaped fixture hit 5.18. 4.3 sits just above the highest observed
-// prose/path sample. KNOWN GAP: a pure-hex secret (charset of only 16 symbols) caps
-// out near 4.0 bits/char even fully random, so entropy alone under-catches it — the
-// separate pure-hex structural check below exists specifically to close that gap
-// without relying on entropy for that shape.
+// topped out at 4.24 bits/char (digit-bearing prose); random base64/mixed tokens of the
+// same length ran 4.26-4.75, and the original secret-shaped fixture hit 5.18. 4.3 sits
+// just above the highest observed prose/path sample — a real repo path scores this low
+// on its own (measured: 3.44-4.05 bits/char) WITHOUT needing any extra slash-based
+// exclusion, so no such exclusion exists here; an earlier version of this file had one,
+// and a wrap probe proved it let a real AWS-key-shaped secret (2 slashes, 4.66 bits/char)
+// through undetected for no remaining benefit once this threshold was raised — removed.
+// KNOWN GAP: a pure-hex secret (charset of only 16 symbols) caps out near 4.0 bits/char
+// even fully random, so entropy alone under-catches it — the separate pure-hex
+// structural check below exists specifically to close that gap without relying on
+// entropy for that shape.
 const VOD_ENTROPY_BITS_THRESHOLD = 4.3;
-
-// Minimum '/' count at which a charset-matching token is treated as a filesystem/URL
-// path rather than a candidate secret — real secrets essentially never contain two or
-// more literal slashes (base64's alphabet includes '/' but a 20+ char random run
-// containing 2+ of them by chance is a documented near-zero-probability edge, and this
-// factory's operator.md convention never puts a secret value in prose anyway).
-const VOD_PATH_SLASH_COUNT_EXCLUDED = 2;
 
 /**
  * Shannon entropy in bits/char over $token's byte distribution. Pure math, no I/O.
@@ -243,19 +240,22 @@ function vod_check_operator_doc_secrets(string $diffText): array
             continue;
         }
         foreach ($m[0] as $token) {
-            if (substr_count($token, '/') >= VOD_PATH_SLASH_COUNT_EXCLUDED) {
-                continue; // path-shaped, not a secret candidate
-            }
             // Pure-hex structural check (see VOD_ENTROPY_BITS_THRESHOLD comment): a hex
             // secret's own alphabet caps its entropy near the threshold, so a token using
             // ONLY hex digits is flagged on shape alone — real text essentially never runs
-            // 20+ chars using nothing but 0-9a-f.
+            // 20+ chars using nothing but 0-9a-f. KNOWN, ACCEPTED FALSE-POSITIVE CLASS: a
+            // git commit SHA or content hash is the same shape (also a pseudo-random hex
+            // digest, so it scores similar entropy to a real hex secret — there is no
+            // reliable LOCAL signal that tells them apart). Caught by the fail message
+            // below rather than by trying to special-case it.
             $isPureHex = preg_match('/^[0-9a-fA-F]+$/', $token) === 1;
             if ($isPureHex || vod_shannon_entropy($token) >= VOD_ENTROPY_BITS_THRESHOLD) {
                 return [
                     'docs/knowledge/operator.md contains a high-entropy token that looks like a secret value.',
                     'Fix: operator.md must never contain secret values — replace with a vendor/service NAME',
                     'and a pointer to config.example.php.',
+                    'If this is actually a git commit SHA or content hash (not a secret): known false-positive',
+                    'class, no local heuristic can tell the two apart — bypass with git commit --no-verify.',
                 ];
             }
         }
@@ -386,12 +386,21 @@ function vod_run_selftest(): int
     $hexDiff = "diff --git a/docs/knowledge/operator.md b/docs/knowledge/operator.md\n"
         . "+++ b/docs/knowledge/operator.md\n"
         . "+webhook secret: 4f9a2c8e1b6d3f70a5c9e2b8f1d4a6c709b3e5f2\n";
+    // Real false negative hit 2026-08-01 (wrap probe, two independent lenses): an earlier
+    // version of this file excluded any 2+-slash token as "path-shaped", which let a
+    // real AWS-secret-key-shaped string straight through — AWS's own published example
+    // key has exactly this shape. No slash exclusion exists anymore (see
+    // VOD_ENTROPY_BITS_THRESHOLD's comment for why none is needed); this must now fail.
+    $awsKeyDiff = "diff --git a/docs/knowledge/operator.md b/docs/knowledge/operator.md\n"
+        . "+++ b/docs/knowledge/operator.md\n"
+        . "+aws key: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY\n";
     $assert(vod_check_operator_doc_secrets($secretDiff) !== [], 'secret-scan: high-entropy token on an added line -> fail');
     $assert(vod_check_operator_doc_secrets($cleanDiff) === [], 'secret-scan: plain-prose added line -> pass');
     $assert(vod_check_operator_doc_secrets($removedOnlyDiff) === [], 'secret-scan: token only on a REMOVED line -> pass (not a new leak)');
-    $assert(vod_check_operator_doc_secrets($pathDiff) === [], 'secret-scan: long repo path (2+ slashes) -> pass');
+    $assert(vod_check_operator_doc_secrets($pathDiff) === [], 'secret-scan: long repo path -> pass (entropy alone, no slash exclusion needed)');
     $assert(vod_check_operator_doc_secrets($hyphenDiff) === [], 'secret-scan: long hyphenated prose sentence -> pass');
     $assert(vod_check_operator_doc_secrets($hexDiff) !== [], 'secret-scan: pure-hex secret-length token -> fail (structural check, not entropy)');
+    $assert(vod_check_operator_doc_secrets($awsKeyDiff) !== [], 'secret-scan: 2-slash AWS-key-shaped secret -> fail (regression test for the removed exclusion)');
 
     // --- temp-dir git integration smoke test: the I/O helpers against a real scratch repo ---
     $tmp = sys_get_temp_dir() . '/vod-selftest-' . bin2hex(random_bytes(4));
@@ -424,6 +433,19 @@ function vod_run_selftest(): int
         $diff = vod_git_staged_diff($tmp, 'docs/knowledge/operator.md');
         $assert(is_string($diff) && str_contains($diff, '+## Owner'), 'git-io: staged-diff helper returns the real added-line content');
 
+        // Regression test for the wrap-probe finding: `git rm --cached` unstages a file
+        // while leaving it on disk. Rules 1/5 must key off git-tracked state, not
+        // file_exists() — this proves the fix actually holds against real git, not just
+        // the pure-function fixtures above.
+        exec('git -C ' . escapeshellarg($tmp) . ' commit -q -m "vod-selftest fixture commit"');
+        exec('git -C ' . escapeshellarg($tmp) . ' rm -q --cached docs/knowledge/operator.md');
+        $trackedAfterRmCached = vod_git_tracked_files($tmp);
+        $assert(
+            is_file($tmp . '/docs/knowledge/operator.md') && is_array($trackedAfterRmCached)
+                && !in_array('docs/knowledge/operator.md', $trackedAfterRmCached, true),
+            'git-io: rm --cached leaves the file on disk but drops it from git ls-files (the exact gap rules 1/5 must not trust file_exists() against)'
+        );
+
         vod_rmtree($tmp);
     } else {
         $assert(false, 'git-io: could not create scratch temp dir — smoke test skipped as a FAILURE, not silently green');
@@ -450,8 +472,14 @@ if ($trackedFiles === null) {
     exit(2);
 }
 
-$docExists = file_exists($repoRoot . '/docs/knowledge/operator.md');
-$manifestExists = file_exists($repoRoot . '/ops/crons.manifest');
+// Checked against the git INDEX ($trackedFiles, already computed above via `git ls-files`
+// — which reads staged-not-yet-committed state too, not just HEAD), never bare disk
+// file_exists(): a `git rm --cached` unstages a file while leaving it on disk, and a
+// disk-only check would report [PASS] for a commit that silently drops it from tracking
+// — the exact outcome this gate exists to prevent. A wrap probe (2026-08-01) proved this
+// live against an earlier disk-only version of this check.
+$docExists = in_array('docs/knowledge/operator.md', $trackedFiles, true);
+$manifestExists = in_array('ops/crons.manifest', $trackedFiles, true);
 
 $checks = [
     'operator-doc-exists' => vod_check_doc_exists($docExists),

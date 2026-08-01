@@ -1,0 +1,4 @@
+# cron-expression | path-or-URL | purpose | state | owning-repo
+15 2 * * * | bin/backup.php | nightly gzipped mysqldump to BACKUP_DIR (+ optional BACKUP_SECONDARY_DIR), prune past BACKUP_RETENTION_DAYS, email MAIL_OWNER on failure | not registered on any server -- app is shelved, no production DB exists (see memory/state.md) | swens.net
+(manual) | bin/purge-cache.php | clear all full-page cache files | manual CLI utility, not a cron | swens.net
+(manual) | bin/seed-keyed.php | seed keyed story content into posts from docs/content-seeds/*.md | manual CLI utility, not a cron | swens.net

@@ -11,6 +11,10 @@
 #   .well-known/  = cert validation
 # Plus the standard excludes: .git*, .cpanel.yml, config.php, config.local.php,
 # storage/, public/media/.
+# ALSO EXCLUDE (added 2026-08-01, operator-docs gate): docs/ — holds
+# docs/knowledge/operator.md (admin URLs, vendor/service names). Must never
+# rsync into the public docroot. Land this in the real rsync task's exclude
+# list the moment Session 3 replaces this echo placeholder.
 #
 # LESSON (Selvatec deploy 11, banked in swens-memory): cPanel runs each task VERBATIM —
 # backslash line continuations break rsync. Single-line tasks only.

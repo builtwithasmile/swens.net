@@ -1,0 +1,136 @@
+#!/bin/sh
+# Pre-commit — identity guard + tests + (template-owned) feature-registry verifier.
+# Install once per clone: bash scripts/install-hooks.sh
+# Bypass (genuine retirement, after updating FEATURES.md): git commit --no-verify
+#
+# NOTE: no `set -e` here — we check each command's status explicitly so the
+# abort messages actually print (set -e would exit before they run).
+#
+# The state:/record:-subject warn-only advisory (Josh's ruling 2026-07-28: extra
+# staged paths outside memory/ get a loud, non-blocking note) lives in the SIBLING
+# .githooks/commit-msg hook, not here — pre-commit runs before git has written the
+# commit message anywhere a hook can read it, so it cannot inspect the subject.
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+
+# --- Identity guard: block commits authored by a stray agent override ---
+WANT_EMAIL="builtwithasmile@gmail.com"
+HAVE_EMAIL="$(git config user.email 2>/dev/null)"
+if [ "$HAVE_EMAIL" != "$WANT_EMAIL" ]; then
+  echo "pre-commit: git user.email is '$HAVE_EMAIL', expected '$WANT_EMAIL'." >&2
+  echo "  A coding session may have set a repo-local override. Fix with:" >&2
+  echo "    git config --unset user.email   (use global), or  git config user.email $WANT_EMAIL" >&2
+  echo "  Bypass once with: git commit --no-verify" >&2
+  exit 1
+fi
+
+# --- Local-dev launcher guard: never commit a dev-server script into the repo ---
+# Local Laragon is optional last-resort convenience, never the canonical stack (see
+# CLAUDE.md ## Stack) — use the Claude Code /preview tool (reads .claude/launch.json,
+# lives outside the repo) instead of committing a launcher. This blocks that class of
+# file from recurring.
+BAD_LOCAL_FILES="$(git diff --cached --name-only --diff-filter=ACM | grep -iE '(^|/)[a-z_-]*(dev[-_]?server|start[-_]?dev|run[-_]?local|local[-_]?server)[a-z_-]*\.(ps1|cmd|bat|sh)$' || true)"
+if [ -n "$BAD_LOCAL_FILES" ]; then
+  echo "pre-commit: local-dev launcher script(s) staged — these must not live in the repo:" >&2
+  echo "$BAD_LOCAL_FILES" | sed 's/^/  /' >&2
+  echo "  Use the Claude Code /preview tool instead (reads .claude/launch.json)." >&2
+  echo "  Bypass once with: git commit --no-verify" >&2
+  exit 1
+fi
+
+# --- Locate PHP: PATH first, then known Laragon installs (tool shells often
+#     don't inherit the user PATH, so PATH alone is unreliable on Windows). ---
+PHP_BIN=""
+if command -v php >/dev/null 2>&1; then
+  PHP_BIN="php"
+else
+  # Widening order: exact known install, then any 8.3.x, then ANY php-8.x —
+  # the fail-loud block below made a version-pinned miss a hard commit block,
+  # so a future Laragon upgrade past 8.3 must not brick newly scaffolded repos.
+  for c in /d/laragon/bin/php/php-8.3.30-Win32-vs16-x64/php.exe \
+           /d/laragon/bin/php/php-8.3.*/php.exe \
+           /c/laragon/bin/php/php-8.3.*/php.exe \
+           /d/laragon/bin/php/php-8*/php.exe \
+           /c/laragon/bin/php/php-8*/php.exe; do
+    if [ -x "$c" ]; then PHP_BIN="$c"; break; fi
+  done
+fi
+if [ -z "$PHP_BIN" ]; then
+  # FAIL LOUD, never silently skip: "green at commit" must mean the gates RAN.
+  # A silent exit 0 here let unverified commits read as verified.
+  # Deliberate escape for a php-less environment:
+  #   SKIP_PHP_GATES=1 git commit ...   (visible in the command, not silent)
+  if [ "$SKIP_PHP_GATES" = "1" ]; then
+    echo "pre-commit: php not found — PHP gates SKIPPED via SKIP_PHP_GATES=1 (unverified commit)." >&2
+    exit 0
+  fi
+  echo "pre-commit: php not found (PATH or Laragon) — REFUSING to commit unverified." >&2
+  echo "  Fix PATH (or install php), or deliberately skip with: SKIP_PHP_GATES=1 git commit ..." >&2
+  exit 1
+fi
+
+# --- Tests: the universal gate. Run if present. ---
+TESTS="$REPO_ROOT/tests/run.php"
+if [ -f "$TESTS" ]; then
+  if ! "$PHP_BIN" "$TESTS"; then
+    echo "" >&2
+    echo "pre-commit: tests failed — commit aborted. Fix, or git commit --no-verify." >&2
+    exit 1
+  fi
+fi
+
+# --- Feature verifier ---
+# Run the template-owned verifier (carries the marker). A repo may instead carry a
+# foreign/embedded verify-features.php (different repoRoot math) that exits non-zero
+# standalone — don't blind-run THAT (it would block every commit). But NEVER silently
+# skip a present verifier: if one exists without the marker, WARN loudly every commit
+# so the gate going dark is impossible to miss. Run /retrofit to validate + stamp it.
+SCRIPT="$REPO_ROOT/scripts/verify-features.php"
+if [ -f "$SCRIPT" ]; then
+  if grep -q "verifier-context: standalone-template" "$SCRIPT" 2>/dev/null; then
+    if ! "$PHP_BIN" "$SCRIPT"; then
+      echo "" >&2
+      echo "pre-commit: feature regression detected — commit aborted." >&2
+      echo "Fix it, or remove the retired feature's section from FEATURES.md in the same commit." >&2
+      echo "Bypass with: git commit --no-verify" >&2
+      exit 1
+    fi
+  else
+    echo "pre-commit: NOTE — scripts/verify-features.php present but UNMARKED; feature gate NOT auto-run here." >&2
+    echo "            (foreign/embedded verifier. Run it manually, or /retrofit to validate + stamp the marker.)" >&2
+  fi
+fi
+
+# --- Operator-docs verifier ---
+# Same wiring pattern as the feature verifier above: run only the template-owned
+# script (marker-matched), warn loudly and skip if a foreign/unmarked one is present —
+# never silently skip a present verifier without saying so.
+SCRIPT_OPDOCS="$REPO_ROOT/scripts/verify-operator-docs.php"
+if [ -f "$SCRIPT_OPDOCS" ]; then
+  if grep -q "verifier-context: standalone-template" "$SCRIPT_OPDOCS" 2>/dev/null; then
+    if ! "$PHP_BIN" "$SCRIPT_OPDOCS"; then
+      echo "" >&2
+      echo "pre-commit: operator-docs gate failed — commit aborted." >&2
+      echo "Fix it (see the [FAIL] lines above for copy-paste commands), or bypass with: git commit --no-verify" >&2
+      exit 1
+    fi
+  else
+    echo "pre-commit: NOTE — scripts/verify-operator-docs.php present but UNMARKED; operator-docs gate NOT auto-run here." >&2
+    echo "            (foreign/embedded verifier. Run it manually, or /retrofit to validate + stamp the marker.)" >&2
+  fi
+fi
+
+# --- Design-evidence advisory (machine-fix ladder rung 2; NEVER blocks) ---
+# Visual files staged with no design-scan run newer than them → say so loudly and let the
+# commit through. Advisory by design: blocking here would only breed --no-verify bypasses.
+STAGED_VISUAL="$(git diff --cached --name-only --diff-filter=ACM | grep -E '^templates/|^(public|assets)/.*\.(css|js)$|\.(css|scss)$' | head -n 1 || true)"
+if [ -n "$STAGED_VISUAL" ]; then
+  GATELOG="$REPO_ROOT/design/gate-log.md"
+  if [ ! -f "$GATELOG" ]; then
+    echo "pre-commit ADVISORY (not blocking): visual file(s) staged (e.g. $STAGED_VISUAL) but this repo has NO design/gate-log.md — the change ships unmeasured." >&2
+    echo "  Run the design gate: node D:/SwensBuildEnv/scripts/capture/design-scan.mjs --repo . <page>=<URL>" >&2
+  elif [ "$REPO_ROOT/$STAGED_VISUAL" -nt "$GATELOG" ]; then
+    echo "pre-commit ADVISORY (not blocking): staged visual file(s) are NEWER than the last design-scan entry in design/gate-log.md — the evidence is stale. Re-run the design gate." >&2
+  fi
+fi
+exit 0

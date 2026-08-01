@@ -1,0 +1,42 @@
+#!/bin/sh
+# commit-msg — warn-only stanza for state:/record:/memory:/fold:-subject commits
+# (Josh's ruling 2026-07-28, widened to cover the same class of subject prefixes):
+# never a hard gate (a hard gate would fight legitimate mixed commits — a
+# state:/record:/memory:/fold: commit routinely bundles a code fix alongside the
+# memory note or fold that describes it). Loud, non-blocking visibility only: when
+# the subject starts with state:, record:, memory:, or fold:, list any staged path
+# OUTSIDE memory/ so a human can eyeball whether something unrelated rode along —
+# the exact shared-checkout hazard CLAUDE.md documents elsewhere ("a
+# bigger-than-expected git show --stat HEAD is a red flag").
+#
+# Lives here, in commit-msg, NOT in .githooks/pre-commit, for a hard technical reason:
+# pre-commit runs BEFORE git has written the commit message anywhere a hook can read it
+# — verified empirically (a scratch repo probe): .git/COMMIT_EDITMSG does not exist yet
+# at pre-commit time even for `git commit -m "..."`. commit-msg is the first hook stage
+# where the message ($1, a path to the message file) and the staged diff are BOTH
+# available before the commit is finalized, and — same as pre-commit — only a nonzero
+# exit blocks the commit, so a warn-only stanza here is exactly as "warn-only" as one
+# in pre-commit would be. Installed the same way as every other .githooks/* file:
+# scripts/install-hooks.sh's loop is already generic over .githooks/*, no changes needed.
+
+MSG_FILE="$1"
+SUBJECT="$(head -n 1 "$MSG_FILE" 2>/dev/null)"
+
+case "$SUBJECT" in
+  state:*|record:*|memory:*|fold:*)
+    REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null)"
+    if [ -z "$REPO_ROOT" ]; then
+      exit 0
+    fi
+    EXTRA="$(git -C "$REPO_ROOT" diff --cached --name-only --diff-filter=ACMR 2>/dev/null | grep -v '^memory/' || true)"
+    if [ -n "$EXTRA" ]; then
+      echo "" >&2
+      echo "commit-msg ADVISORY (not blocking): '$SUBJECT' stages file(s) OUTSIDE memory/ —" >&2
+      echo "  a state:/record:/memory:/fold: commit can legitimately bundle other work, but double-check none of" >&2
+      echo "  these rode in from a concurrent session's staged WIP (shared-checkout hazard):" >&2
+      echo "$EXTRA" | sed 's/^/    /' >&2
+    fi
+    ;;
+esac
+
+exit 0

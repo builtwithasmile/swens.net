@@ -1,0 +1,14 @@
+#!/bin/sh
+# Pre-merge-commit — the gate for CLEAN auto-merges.
+#
+# `pre-commit` does NOT run when git creates a merge commit automatically: only a
+# CONFLICTED merge, resolved by hand and finished with `git commit`, triggers it.
+# So a clean auto-merge could land red tests with no gate at all.
+#
+# Git calls this hook for exactly that case (>= 2.24). Same gate, one home — any
+# change to the rail belongs in pre-commit and arrives here for free.
+#
+# Install once per clone: bash scripts/install-hooks.sh
+# Bypass: git merge --no-verify
+
+exec "$(dirname "$0")/pre-commit" "$@"

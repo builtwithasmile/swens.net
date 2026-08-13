@@ -69,10 +69,74 @@ if [ -z "$PHP_BIN" ]; then
   exit 1
 fi
 
+# --- Operator-docs verifier (runs BEFORE the test suite: milliseconds vs minutes, so a
+#     gate abort here doesn't cost a full suite run first) ---
+SCRIPT_OPDOCS="$REPO_ROOT/scripts/verify-operator-docs.php"
+if [ -f "$SCRIPT_OPDOCS" ]; then
+  if grep -q "verifier-context: standalone-template" "$SCRIPT_OPDOCS" 2>/dev/null; then
+    if ! "$PHP_BIN" "$SCRIPT_OPDOCS"; then
+      echo "" >&2
+      echo "pre-commit: operator-docs gate failed — commit aborted." >&2
+      echo "Fix it (see the [FAIL] lines above for copy-paste commands), or bypass with: git commit --no-verify" >&2
+      exit 1
+    fi
+  else
+    echo "pre-commit: NOTE — scripts/verify-operator-docs.php present but UNMARKED; operator-docs gate NOT auto-run here." >&2
+    echo "            (foreign/embedded verifier. Run it manually, or /retrofit to validate + stamp the marker.)" >&2
+  fi
+fi
+
+# --- Document-authority gate REMOVED 2026-08-13. It blocked any newly ADDED in-scope .md
+#     that lacked an `authority:` front-matter rank. An evidence pass across the fleet's
+#     history found no instance of it preventing a real problem: it only ever added a
+#     required step to writing a document, in a system already measured at 51% of commits
+#     changing no code. The ladder survives as guidance in
+#     factory/knowledge/document-authority.md — guidance, not a gate. ---
+
+# --- Prose-only detection (2026-08-13): the suite is 5-10 minutes and 51% of fleet
+#     commits in the preceding 30 days changed NO code at all — ~150-300 wall-clock
+#     hours of test runs that could not have caught anything, because nothing they
+#     test was touched. A staged diff of memory/, docs/, operator/ and loose .md
+#     cannot change program behaviour, so the suite is skipped for it.
+#     Deliberately CONSERVATIVE: one non-prose path anywhere in the diff runs the
+#     full suite, and FEATURES.md is excluded from the prose set because the feature
+#     verifier's whole job is checking FEATURES.md claims against code.
+#     Skipping is announced, never silent — same contract as the php-not-found block
+#     above: "green at commit" must always mean the gates that applied actually RAN.
+NON_PROSE="$(git diff --cached --name-only --diff-filter=ACMR \
+  | grep -vE '^(memory/|docs/|operator/)' \
+  | grep -vE '\.md$' \
+  || true)"
+FEATURES_TOUCHED="$(git diff --cached --name-only --diff-filter=ACMR | grep -E '(^|/)FEATURES\.md$' || true)"
+PROSE_ONLY=0
+if [ -z "$NON_PROSE" ] && [ -z "$FEATURES_TOUCHED" ]; then PROSE_ONLY=1; fi
+
+# --- state.md structural lint (2026-08-13): runs even when PROSE_ONLY below
+#     skips the full suite — memory/state.md is exactly the file most likely to
+#     be the ONLY thing staged in a prose-only commit, and loops-lib.php's
+#     tolerant parser silently degrades a broken file to "0 loops" rather than
+#     erroring. Seconds-fast (no filesystem walk, one file read); announced,
+#     never silent, same contract as the php-not-found block above.
+STATE_MD_STAGED="$(git diff --cached --name-only --diff-filter=ACM | grep -E '(^|/)memory/state\.md$' || true)"
+if [ -n "$STATE_MD_STAGED" ]; then
+  LINT_SCRIPT="D:/SwensBuildEnv/scripts/open-loops.php"
+  if [ -f "$LINT_SCRIPT" ]; then
+    if ! "$PHP_BIN" "$LINT_SCRIPT" --lint-state "$REPO_ROOT/memory/state.md"; then
+      echo "" >&2
+      echo "pre-commit: memory/state.md failed structural lint — commit aborted." >&2
+      echo "Bypass with: git commit --no-verify" >&2
+      exit 1
+    fi
+  fi
+fi
+
 # --- Tests: the universal gate. Run if present. ---
 TESTS="$REPO_ROOT/tests/run.php"
 if [ -f "$TESTS" ]; then
-  if ! "$PHP_BIN" "$TESTS"; then
+  if [ "$PROSE_ONLY" = "1" ]; then
+    echo "pre-commit: prose-only diff (memory/docs/operator/*.md) — test suite SKIPPED." >&2
+    echo "            Stage any code path, or FEATURES.md, and the full suite runs again." >&2
+  elif ! "$PHP_BIN" "$TESTS"; then
     echo "" >&2
     echo "pre-commit: tests failed — commit aborted. Fix, or git commit --no-verify." >&2
     exit 1
@@ -97,25 +161,6 @@ if [ -f "$SCRIPT" ]; then
     fi
   else
     echo "pre-commit: NOTE — scripts/verify-features.php present but UNMARKED; feature gate NOT auto-run here." >&2
-    echo "            (foreign/embedded verifier. Run it manually, or /retrofit to validate + stamp the marker.)" >&2
-  fi
-fi
-
-# --- Operator-docs verifier ---
-# Same wiring pattern as the feature verifier above: run only the template-owned
-# script (marker-matched), warn loudly and skip if a foreign/unmarked one is present —
-# never silently skip a present verifier without saying so.
-SCRIPT_OPDOCS="$REPO_ROOT/scripts/verify-operator-docs.php"
-if [ -f "$SCRIPT_OPDOCS" ]; then
-  if grep -q "verifier-context: standalone-template" "$SCRIPT_OPDOCS" 2>/dev/null; then
-    if ! "$PHP_BIN" "$SCRIPT_OPDOCS"; then
-      echo "" >&2
-      echo "pre-commit: operator-docs gate failed — commit aborted." >&2
-      echo "Fix it (see the [FAIL] lines above for copy-paste commands), or bypass with: git commit --no-verify" >&2
-      exit 1
-    fi
-  else
-    echo "pre-commit: NOTE — scripts/verify-operator-docs.php present but UNMARKED; operator-docs gate NOT auto-run here." >&2
     echo "            (foreign/embedded verifier. Run it manually, or /retrofit to validate + stamp the marker.)" >&2
   fi
 fi

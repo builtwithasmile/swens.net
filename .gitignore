@@ -19,3 +19,4 @@ php_errorlog
 *~
 *.swp
 .htaccess.bak*
+.cpanel.yml

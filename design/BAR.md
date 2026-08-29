@@ -1,6 +1,11 @@
+---
+authority: josh
+ratified: "2026-08-29 by Josh (bulk ratify pass)"
+---
+
 # design/BAR.md — swens.net (the Porch)
 
-> **DRAFT — authored 2026-08-28 from live recon; reference screenshots still to capture (/wow step 1); Josh to ratify.**
+> **RATIFIED 2026-08-29 by Josh** (bulk ratify pass). This BAR is the measuring stick for the surface's key task — budgets are grounded in real live recon; revise any that don't hold up in practice. Reference screenshots still to capture via /wow step 1.
 
 **Goal line:** World-class here means that within *one unscrolled screen* and roughly *five seconds*, a stranger knows this is Josh Swenson, feels a specific confident taste (not a template), and sees that the things he built are real and named — while finding **nothing to look him up by** and **nothing to buy**. The measuring stick is the single public screen, not a scroll.
 

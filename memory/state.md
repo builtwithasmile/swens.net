@@ -37,7 +37,7 @@
 
 ## Business / operational (Josh's records — not dev loops)
 - Maple parity in the businesses footer: needs Josh's verbatim blurb for a Maple line (or his call to leave Selvatec as the sole software pointer) before the one-`<li>` edit lands (wrap probe, 2026-07-10).
-- DIRECTION.md (Porch pivot) still Josh's to write — round-table 2026-07-10 gave the framing ("identity anchor + credibility hub, not an autobiography"), but per its own rule it must be his words, not transcribed from the crew's output.
+- DIRECTION.md (Porch pivot) — **RESOLVED 2026-08-28.** Written in Josh's words: assembled from his own swens-memory drafts (07_keyed_what-this-place-is + 01_public_site-tone) and his 2026-07-10 minimal-hub round-table ruling, approved verbatim. `DIRECTION.md` now exists at repo root.
 
 ## Broken / watch out
 <!-- Known-broken or fragile things a future session should not trip over. -->

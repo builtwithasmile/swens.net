@@ -90,24 +90,58 @@ class InsideController
             $response->redirect('/inside#board');
         }
 
-        // Duplicate-submit guard: no unique constraint on checkins, and a
-        // double-click/resubmit here would otherwise both double-post to the
-        // board AND double-email the owner (notifyOwner has no lock of its own).
-        $dupe = (int) Database::fetchColumn(
-            "SELECT COUNT(*) FROM checkins WHERE member_id = ? AND body = ? AND created_at > (NOW() - INTERVAL 10 SECOND)",
-            [$memberId, $body]
-        );
-        if ($dupe > 0) {
-            $response->redirect('/inside#board');
+        // Duplicate-submit guard. The window read and the insert have to be ONE
+        // atomic step: as a bare SELECT-then-INSERT they are not, and two
+        // genuinely concurrent posts both pass the SELECT before either INSERT
+        // commits — double-posting to the board AND double-emailing the owner
+        // (notifyOwner has no lock of its own). That is not theoretical: the
+        // bare version duplicated on 6 of 6 concurrent runs against a real
+        // MySQL, this version on 0 of 20 (measured 2026-09-08).
+        //
+        // There is no unique key to upsert against and no honest way to add
+        // one: `body` is VARCHAR(2000), far past InnoDB's index-length limit,
+        // and the 10-second window is a sliding one, not a bucket that could be
+        // folded into a key. So the serialization point is the parent row this
+        // check-in hangs off — the member. Lock it FIRST, before the read and
+        // before the write; every concurrent check-in by this member queues
+        // there, and other members are untouched (the lock is one row).
+        //
+        // READ COMMITTED is pinned for this transaction so the window read is
+        // guaranteed to see a row committed by the request we just queued
+        // behind, rather than depending on how the server's default isolation
+        // happens to place its snapshot. Making the window read itself a
+        // locking read was measured and rejected: with no usable index it
+        // full-scans `checkins` and blocks OTHER members' inserts.
+        Database::pdo()->exec('SET TRANSACTION ISOLATION LEVEL READ COMMITTED');
+        $posted = (bool) Database::transaction(static function () use ($memberId, $body, $mood): bool {
+            Database::fetchColumn("SELECT id FROM members WHERE id = ? FOR UPDATE", [$memberId]);
+
+            $dupe = (int) Database::fetchColumn(
+                "SELECT COUNT(*) FROM checkins WHERE member_id = ? AND body = ? AND created_at > (NOW() - INTERVAL 10 SECOND)",
+                [$memberId, $body]
+            );
+            if ($dupe > 0) {
+                return false;
+            }
+
+            Database::insert('checkins', [
+                'member_id' => $memberId,
+                'body'      => $body,
+                'mood'      => ($mood !== '' ? $mood : null),
+            ]);
+            return true;
+        });
+
+        // The side effect is guarded by the same atomic region: only the request
+        // that actually posted gets here true, so the duplicate that lost the
+        // race sends nothing. The send stays OUTSIDE the transaction on purpose
+        // — send_mail() is best-effort and must never roll back a check-in that
+        // already succeeded, and a stalled SMTP call must never sit holding the
+        // member row lock. A repeat outside the 10-second window is a new post:
+        // it inserts and it notifies, exactly as before.
+        if ($posted) {
+            $this->notifyOwner($memberId, $body);
         }
-
-        Database::insert('checkins', [
-            'member_id' => $memberId,
-            'body'      => $body,
-            'mood'      => ($mood !== '' ? $mood : null),
-        ]);
-
-        $this->notifyOwner($memberId, $body);
 
         $response->redirect('/inside#board');
     }

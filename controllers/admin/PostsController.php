@@ -43,17 +43,20 @@ class PostsController
         $this->verifyCsrf($request);
         [$data, $errors] = $this->validate($request);
         if ($errors) {
-            $html = Template::render('pages/admin/post-form', [
-                'title'     => 'New Post — Admin',
-                'post'      => $data,
-                'buildings' => Buildings::postableAll(),
-                'csrf'      => csrf_field(),
-                'errors'    => $errors,
-            ], 'admin');
-            $response->html($html);
+            $this->renderFormError('New Post — Admin', $data, $errors, $response);
             return;
         }
-        Database::insert('posts', $data);
+        try {
+            Database::insert('posts', $data);
+        } catch (\PDOException $e) {
+            // uq_building_slug — most likely a double-submit (double-click, back-button
+            // resubmit) rather than a real collision. Friendly form error, not a 500.
+            if ((int) $e->errorInfo[1] === 1062) {
+                $this->renderFormError('New Post — Admin', $data, ['slug' => 'That slug already exists for this building — pick another.'], $response);
+                return;
+            }
+            throw $e;
+        }
         AuditLog::record('post.create', $data['slug']);
         PublicCache::purgeAll();
         redirect('/admin');
@@ -79,17 +82,18 @@ class PostsController
         $this->requirePost($id);
         [$data, $errors] = $this->validate($request);
         if ($errors) {
-            $html = Template::render('pages/admin/post-form', [
-                'title'     => 'Edit Post — Admin',
-                'post'      => array_merge($data, ['id' => $id]),
-                'buildings' => Buildings::postableAll(),
-                'csrf'      => csrf_field(),
-                'errors'    => $errors,
-            ], 'admin');
-            $response->html($html);
+            $this->renderFormError('Edit Post — Admin', array_merge($data, ['id' => $id]), $errors, $response);
             return;
         }
-        Database::update('posts', $data, 'id = :id', ['id' => $id]);
+        try {
+            Database::update('posts', $data, 'id = :id', ['id' => $id]);
+        } catch (\PDOException $e) {
+            if ((int) $e->errorInfo[1] === 1062) {
+                $this->renderFormError('Edit Post — Admin', array_merge($data, ['id' => $id]), ['slug' => 'That slug already exists for this building — pick another.'], $response);
+                return;
+            }
+            throw $e;
+        }
         AuditLog::record('post.update', $data['slug']);
         PublicCache::purgeAll();
         redirect('/admin');
@@ -107,6 +111,18 @@ class PostsController
     }
 
     // -------------------------------------------------------------------------
+
+    private function renderFormError(string $title, array $postForTemplate, array $errors, Response $response): void
+    {
+        $html = Template::render('pages/admin/post-form', [
+            'title'     => $title,
+            'post'      => $postForTemplate,
+            'buildings' => Buildings::postableAll(),
+            'csrf'      => csrf_field(),
+            'errors'    => $errors,
+        ], 'admin');
+        $response->html($html);
+    }
 
     private function requirePost(int $id): array
     {

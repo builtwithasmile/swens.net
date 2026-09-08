@@ -29,7 +29,9 @@ are manual CLI utilities, never scheduled.
 allowlisted `ADMIN_OWNER_EMAIL`, not multi-account). Covers posts
 (`PostsController`), media uploads (`MediaController`), the keyed-circle member
 list — issue/revoke/approve/rotate access keys (`MembersController`) — and a
-read-only audit trail (`AuditController`).
+read-only audit trail (`AuditController`). A duplicate `(building, slug)` on
+save (double-click, back-button resubmit) shows a friendly form error, not a
+crash — same pattern as the member-issue duplicate-email error.
 
 **Not currently live.** The PHP app (admin panel included) is fully built but
 shelved — it has never been deployed. The live swens.net site is a separate

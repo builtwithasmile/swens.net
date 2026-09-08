@@ -90,6 +90,17 @@ class InsideController
             $response->redirect('/inside#board');
         }
 
+        // Duplicate-submit guard: no unique constraint on checkins, and a
+        // double-click/resubmit here would otherwise both double-post to the
+        // board AND double-email the owner (notifyOwner has no lock of its own).
+        $dupe = (int) Database::fetchColumn(
+            "SELECT COUNT(*) FROM checkins WHERE member_id = ? AND body = ? AND created_at > (NOW() - INTERVAL 10 SECOND)",
+            [$memberId, $body]
+        );
+        if ($dupe > 0) {
+            $response->redirect('/inside#board');
+        }
+
         Database::insert('checkins', [
             'member_id' => $memberId,
             'body'      => $body,

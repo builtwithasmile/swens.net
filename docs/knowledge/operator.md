@@ -31,8 +31,9 @@ allowlisted `ADMIN_OWNER_EMAIL`, not multi-account). Covers posts
 list — issue/revoke/approve/rotate access keys (`MembersController`) — and a
 read-only audit trail (`AuditController`).
 
-**Not currently live.** `.cpanel.yml`'s deploy task is a disabled placeholder
-(a literal `/bin/echo`) — there is no automated deploy yet. The page actually
-serving swens.net today is a hand-placed static page, deployed manually outside
-this pipeline; this repo's PHP app, admin panel included, is fully built but
-shelved. Deploy history and revival steps live in `memory/state.md`, not here.
+**Not currently live.** The PHP app (admin panel included) is fully built but
+shelved — it has never been deployed. The live swens.net site is a separate
+static page under `static/`, served from the OVH/CloudPanel box and deployed
+with `dploy deploy main` (no cPanel involved; `.cpanel.yml`'s deploy task was
+the app's disabled placeholder from the old cPanel-hosting era and stays
+inert). Deploy history and revival steps live in `memory/state.md`, not here.

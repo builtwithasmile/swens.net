@@ -9,7 +9,7 @@ declare(strict_types=1);
  *
  * Behaviour (locked):
  *   - 5 steps: Pre-flight -> Database -> Site config -> Install (SSE) -> Finalize.
- *   - NEVER runs CREATE DATABASE. Josh creates the DB + user in cPanel and gives
+ *   - NEVER runs CREATE DATABASE. Josh creates the DB + user on the CloudPanel box and gives
  *     credentials; this connects to the existing DB. If it's missing, test-db
  *     tells the user to create it first.
  *   - Idempotent migrations via a _migrations table.
@@ -129,7 +129,7 @@ function testDb(array $b): array {
     } catch (Throwable $e) {
         $msg = $e->getMessage();
         if (stripos($msg, 'Unknown database') !== false) {
-            return ['ok' => false, 'detail' => "Database '" . ($b['DB_NAME'] ?? '') . "' does not exist. Create it (and the DB user) in cPanel first, then re-enter the credentials. This installer never creates databases."];
+            return ['ok' => false, 'detail' => "Database '" . ($b['DB_NAME'] ?? '') . "' does not exist. Create it (and the DB user) on the CloudPanel box first, then re-enter the credentials. This installer never creates databases."];
         }
         return ['ok' => false, 'detail' => 'Connection failed: ' . $msg];
     }
@@ -260,7 +260,7 @@ function renderWizard(array $fields, bool $hasMig): void {
 <body class="bg-slate-100 text-slate-800">
 <div class="max-w-2xl mx-auto my-10 bg-white rounded-xl shadow p-6">
   <h1 class="text-xl font-semibold mb-1">Install</h1>
-  <p class="text-sm text-slate-500 mb-5">Frozen Selvatec installer. Create your database in cPanel first; this connects to it.</p>
+  <p class="text-sm text-slate-500 mb-5">Frozen Selvatec installer. Create your database in CloudPanel first; this connects to it.</p>
   <div id="steps" class="flex gap-2 text-xs mb-6">
     <span data-i=1 class="px-2 py-1 rounded bg-emerald-600 text-white">1 Pre-flight</span>
     <span data-i=2 class="px-2 py-1 rounded bg-slate-200">2 Database</span>

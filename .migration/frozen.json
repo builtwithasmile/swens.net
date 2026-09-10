@@ -1,0 +1,11 @@
+{
+    "kind": "brain-migration-frozen",
+    "version": 1,
+    "repo": "swens.net",
+    "repo_path": "D:/GitHub/swens.net",
+    "source": "memory/state.md",
+    "frozen": ".migration/frozen/state.md",
+    "sha256": "4bd522f9fd2c0ff5efb9a6320127fee4aff1185f01598fc9c15b9833244ceff4",
+    "bytes": 45191,
+    "frozen_at": "2026-09-10T11:44:51Z"
+}

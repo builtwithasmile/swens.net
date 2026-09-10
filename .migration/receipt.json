@@ -1,0 +1,246 @@
+{
+    "kind": "brain-migration-receipt",
+    "version": 1,
+    "cutover_at": "2026-09-10T11:47:06Z",
+    "repo": "swens.net",
+    "repo_path": "D:/GitHub/swens.net",
+    "board": "swens.net",
+    "session": "cutover-2026-09-10-b3",
+    "source": "memory/state.md",
+    "source_sha256": "4bd522f9fd2c0ff5efb9a6320127fee4aff1185f01598fc9c15b9833244ceff4",
+    "mapping": ".migration/mapping.json",
+    "mapping_sha256": "a06adf7c4c7294e8f111cff33db5e158fd1b9431dfc6b8cd08ef6ef09535cb53",
+    "commits": {
+        "add": "55258fccb649c48e7e543dbfcc89d6c920a8c296",
+        "close": "d4e0346bb41be0b5ddd64a4c4c80b9d7efd4e3fc"
+    },
+    "item_ids": [
+        "SN-0001",
+        "SN-0002",
+        "SN-0003",
+        "SN-0004",
+        "SN-0005",
+        "SN-0006",
+        "SN-0007",
+        "SN-0008",
+        "SN-0009",
+        "SN-0010",
+        "SN-0011",
+        "SN-0012",
+        "SN-0013",
+        "SN-0014",
+        "SN-0015",
+        "SN-0016",
+        "SN-0017",
+        "SN-0018",
+        "SN-0019",
+        "SN-0020",
+        "SN-0021",
+        "SN-0022",
+        "SN-0023",
+        "SN-0024"
+    ],
+    "items": [
+        {
+            "id": "SN-0001",
+            "slot": "SLOT-0001",
+            "line": 15,
+            "state": "open",
+            "version": 1,
+            "disposition": null
+        },
+        {
+            "id": "SN-0002",
+            "slot": "SLOT-0002",
+            "line": 16,
+            "state": "open",
+            "version": 1,
+            "disposition": null
+        },
+        {
+            "id": "SN-0003",
+            "slot": "SLOT-0003",
+            "line": 17,
+            "state": "open",
+            "version": 1,
+            "disposition": null
+        },
+        {
+            "id": "SN-0004",
+            "slot": "SLOT-0004",
+            "line": 20,
+            "state": "closed",
+            "version": 2,
+            "disposition": "done"
+        },
+        {
+            "id": "SN-0005",
+            "slot": "SLOT-0005",
+            "line": 21,
+            "state": "closed",
+            "version": 2,
+            "disposition": "done"
+        },
+        {
+            "id": "SN-0006",
+            "slot": "SLOT-0006",
+            "line": 22,
+            "state": "closed",
+            "version": 2,
+            "disposition": "done"
+        },
+        {
+            "id": "SN-0007",
+            "slot": "SLOT-0007",
+            "line": 23,
+            "state": "closed",
+            "version": 2,
+            "disposition": "done"
+        },
+        {
+            "id": "SN-0008",
+            "slot": "SLOT-0008",
+            "line": 26,
+            "state": "closed",
+            "version": 2,
+            "disposition": "done"
+        },
+        {
+            "id": "SN-0009",
+            "slot": "SLOT-0009",
+            "line": 27,
+            "state": "closed",
+            "version": 2,
+            "disposition": "done"
+        },
+        {
+            "id": "SN-0010",
+            "slot": "SLOT-0010",
+            "line": 28,
+            "state": "closed",
+            "version": 2,
+            "disposition": "done"
+        },
+        {
+            "id": "SN-0011",
+            "slot": "SLOT-0011",
+            "line": 29,
+            "state": "closed",
+            "version": 2,
+            "disposition": "superseded"
+        },
+        {
+            "id": "SN-0012",
+            "slot": "SLOT-0012",
+            "line": 30,
+            "state": "closed",
+            "version": 2,
+            "disposition": "done"
+        },
+        {
+            "id": "SN-0013",
+            "slot": "SLOT-0013",
+            "line": 31,
+            "state": "closed",
+            "version": 2,
+            "disposition": "superseded"
+        },
+        {
+            "id": "SN-0014",
+            "slot": "SLOT-0014",
+            "line": 32,
+            "state": "closed",
+            "version": 2,
+            "disposition": "done"
+        },
+        {
+            "id": "SN-0015",
+            "slot": "SLOT-0015",
+            "line": 34,
+            "state": "closed",
+            "version": 2,
+            "disposition": "done"
+        },
+        {
+            "id": "SN-0016",
+            "slot": "SLOT-0016",
+            "line": 42,
+            "state": "open",
+            "version": 1,
+            "disposition": null
+        },
+        {
+            "id": "SN-0017",
+            "slot": "SLOT-0017",
+            "line": 43,
+            "state": "closed",
+            "version": 2,
+            "disposition": "done"
+        },
+        {
+            "id": "SN-0018",
+            "slot": "SLOT-0018",
+            "line": 120,
+            "state": "closed",
+            "version": 2,
+            "disposition": "done"
+        },
+        {
+            "id": "SN-0019",
+            "slot": "SLOT-0019",
+            "line": 121,
+            "state": "closed",
+            "version": 2,
+            "disposition": "done"
+        },
+        {
+            "id": "SN-0020",
+            "slot": "SLOT-0020",
+            "line": 122,
+            "state": "closed",
+            "version": 2,
+            "disposition": "done"
+        },
+        {
+            "id": "SN-0021",
+            "slot": "SLOT-0021",
+            "line": 123,
+            "state": "closed",
+            "version": 2,
+            "disposition": "done"
+        },
+        {
+            "id": "SN-0022",
+            "slot": "SLOT-0022",
+            "line": 124,
+            "state": "closed",
+            "version": 2,
+            "disposition": "done"
+        },
+        {
+            "id": "SN-0023",
+            "slot": "SLOT-0023",
+            "line": 125,
+            "state": "closed",
+            "version": 2,
+            "disposition": "done"
+        },
+        {
+            "id": "SN-0024",
+            "slot": "SLOT-0024",
+            "line": 126,
+            "state": "closed",
+            "version": 2,
+            "disposition": "done"
+        }
+    ],
+    "obligations_total": 42,
+    "counts": {
+        "item_open": 4,
+        "item_closed": 20,
+        "void": 18,
+        "uncertain": 0
+    },
+    "pointer": "BOARD: swens-memory boards/swens.net.md - this repo's in-flight work now lives on that brain board; read and write it with tools/brain/client.php. The frozen old board is .migration/frozen/state.md and the cutover receipt is .migration/receipt.json.",
+    "pointer_written": true
+}

@@ -12,12 +12,12 @@
  * — so this page's density matches /office's structured feel without touching any words.
  */
 ?>
-<!-- Section: Who's Swens -->
+<?php /* Section: Who's Swens */ ?>
 <section class="section-pad narrow" style="--accent:var(--gold)">
   <p class="eyebrow">The Gate</p>
   <h1 class="h2-display">Who&rsquo;s Swens?</h1>
   <div style="display:grid;gap:1.5rem">
-  <p><!-- VOICE: plain bio, no cadence (voice.md AI-tells ban). Facts: film credits, HotSync 2000-2020 (corrected 2026-07-10, was wrongly 2000-2022 here), Guanacaste, KillerBud canon (swens-memory fact pack 2026-06-12). -->
+  <p><?php /* VOICE: plain bio, no cadence (voice.md AI-tells ban). Facts: film credits, HotSync 2000-2020 (corrected 2026-07-10, was wrongly 2000-2022 here), Guanacaste, KillerBud canon (swens-memory fact pack 2026-06-12). */ ?>
     Short version: I made the computers on TV look like they were doing something. The X-Files, Stargate SG-1, shows like that. When a console beeped like it meant it, that was usually my desk. Somebody also had to keep the real machines alive between takes, and that part quietly became the career.
   </p>
   <p style="border-top:1px solid var(--line);padding-top:1.5rem">
@@ -38,30 +38,30 @@
   </div>
 </section>
 
-<!-- Section: Request a key -->
+<?php /* Section: Request a key */ ?>
 <section class="section-pad gate-panel" style="--accent:var(--gold)">
   <div class="narrow">
   <?php if ($sent): ?>
-    <!-- Flash: confirmation (shown after submit, rate-limit, honeypot, bad CSRF — all indistinguishable) -->
+    <?php /* Flash: confirmation (shown after submit, rate-limit, honeypot, bad CSRF — all indistinguishable) */ ?>
     <div class="flash" role="status" aria-live="polite">
-      <!-- TODO-lyra; vein: "Got it. If a key gets cut, you'll hear from me." -->
+      <?php /* TODO-lyra; vein: "Got it. If a key gets cut, you'll hear from me." */ ?>
       <p>Got it. If a key gets cut, you&rsquo;ll hear from me.</p>
     </div>
   <?php else: ?>
     <div class="gate-form-wrap">
-      <!-- Left column: what keys are -->
+      <?php /* Left column: what keys are */ ?>
       <div class="gate-copy">
-        <h2><!-- TODO-lyra -->Request a key</h2>
-        <p><!-- honest status — keys exist, none issued yet; already in-voice -->
+        <h2><?php /* TODO-lyra */ ?>Request a key</h2>
+        <p><?php /* honest status — keys exist, none issued yet; already in-voice */ ?>
           Keys exist. None are being cut yet. Asking now just means I know you&rsquo;d like one. No timeline, no promise.
         </p>
       </div>
 
-      <!-- Right column: the form -->
+      <?php /* Right column: the form */ ?>
       <form class="gate-form" method="post" action="/gate" novalidate>
         <?= csrf_field() ?>
 
-        <!-- Honeypot field — invisible to humans, triggers bot detection -->
+        <?php /* Honeypot field — invisible to humans, triggers bot detection */ ?>
         <div class="honeypot" aria-hidden="true">
           <label for="gate-website">Website</label>
           <input type="text" id="gate-website" name="website" tabindex="-1" autocomplete="off" value="">
@@ -77,7 +77,7 @@
         </div>
 
         <div class="field<?= isset($errors['contact']) ? ' has-error' : '' ?>">
-          <label for="gate-contact"><!-- TODO-lyra; vein: "Email, or how I know you" -->Email, or how I know you</label>
+          <label for="gate-contact"><?php /* TODO-lyra; vein: "Email, or how I know you" */ ?>Email, or how I know you</label>
           <input type="text" id="gate-contact" name="contact" required maxlength="160"
                  value="<?= e($old['contact'] ?? '') ?>">
           <?php if (isset($errors['contact'])): ?>
@@ -96,7 +96,7 @@
         <button type="submit" class="button primary">Request a key</button>
 
         <p class="form-note">
-          <!-- TODO-lyra; honest no-keys-yet + where this goes (straight to Josh, nowhere else; nothing stored on the server) -->
+          <?php /* TODO-lyra; honest no-keys-yet + where this goes (straight to Josh, nowhere else; nothing stored on the server) */ ?>
           No keys are being cut yet. This goes straight to my inbox. Nothing gets stored on the server.
         </p>
       </form>

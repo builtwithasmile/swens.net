@@ -20,7 +20,7 @@ $hasNew      = ($newPosts || $newCheckins);
 </section>
 <?php endif; ?>
 
-<!-- Welcome -->
+<?php /* Welcome */ ?>
 <?php if ($welcome): ?>
 <section class="section-pad narrow">
   <p class="eyebrow">Inside</p>
@@ -29,7 +29,7 @@ $hasNew      = ($newPosts || $newCheckins);
 </section>
 <?php endif; ?>
 
-<!-- New since your last visit — the load-bearing mechanic -->
+<?php /* New since your last visit — the load-bearing mechanic */ ?>
 <?php if ($hasNew): ?>
 <section class="section-pad narrow" style="padding-top:0">
   <div style="border:1px solid var(--accent);border-radius:8px;padding:1.25rem 1.5rem">
@@ -53,7 +53,7 @@ $hasNew      = ($newPosts || $newCheckins);
 </section>
 <?php endif; ?>
 
-<!-- Wayfinding -->
+<?php /* Wayfinding */ ?>
 <section class="section-pad narrow" style="padding-top:0;padding-bottom:0">
   <nav aria-label="Inside" style="display:flex;flex-wrap:wrap;gap:1.25rem;font-size:.875rem">
     <a href="#board" style="color:var(--accent)">The board</a>
@@ -63,7 +63,7 @@ $hasNew      = ($newPosts || $newCheckins);
   </nav>
 </section>
 
-<!-- The board: status (Josh's words) + live check-ins -->
+<?php /* The board: status (Josh's words) + live check-ins */ ?>
 <section id="board" class="section-pad">
   <div class="narrow">
     <?php if ($board): ?>
@@ -112,7 +112,7 @@ $hasNew      = ($newPosts || $newCheckins);
   </div>
 </section>
 
-<!-- Now -->
+<?php /* Now */ ?>
 <?php if ($nows): ?>
 <section id="now" class="section-pad">
   <div class="narrow">
@@ -127,7 +127,7 @@ $hasNew      = ($newPosts || $newCheckins);
 </section>
 <?php endif; ?>
 
-<!-- The long stretch -->
+<?php /* The long stretch */ ?>
 <?php if ($stories): ?>
 <section id="story" class="section-pad">
   <div class="narrow">
@@ -144,7 +144,7 @@ $hasNew      = ($newPosts || $newCheckins);
 </section>
 <?php endif; ?>
 
-<!-- What this place is -->
+<?php /* What this place is */ ?>
 <?php if ($about): ?>
 <section id="about" class="section-pad">
   <div class="narrow">

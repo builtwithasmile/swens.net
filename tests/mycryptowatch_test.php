@@ -69,6 +69,36 @@ if (!preg_match('~^HTTP/[\d.]+ (\d{3})~m', $out, $m)) {
         'CoinPaprika bitcoin row has rank + CAD price + 24h change');
 }
 
+// --- Currency charts (CAD→USD, CAD→CRC, USD→CRC) on the same page -----------------------------
+t_ok(str_contains($page, 'https://api.frankfurter.dev/v2/rates?base=CAD&quotes=USD,CRC'),
+    'Currency charts fetch Frankfurter v2 CAD rates for USD and CRC');
+t_ok(!str_contains($page, 'frankfurter.dev/v1') && !str_contains($page, 'frankfurter.app'),
+    'Currency charts never use the deprecated Frankfurter v1 / .app endpoints');
+foreach (["k: '5D'", "k: '1M'", "k: '1Y'", "k: '5Y'", "k: 'Max'", "group: 'week'", "group: 'month'", 'd.CRC / d.USD'] as $needle) {
+    t_ok(str_contains($page, $needle), "Currency charts define the range/pair: {$needle}");
+}
+
+$fx = @shell_exec('curl -sS -m 30 -D - -H "Origin: https://swens.net" "https://api.frankfurter.dev/v2/rates?base=CAD&quotes=USD,CRC&from=' . date('Y-m-d', time() - 12 * 86400) . '" 2>&1');
+$fx = is_string($fx) ? $fx : '';
+if (!preg_match('~^HTTP/[\d.]+ (\d{3})~m', $fx, $fm)) {
+    fwrite(STDERR, "SKIP live Frankfurter check: no HTTP response (curl or network unavailable)\n");
+} elseif ($fm[1] === '429') {
+    fwrite(STDERR, "SKIP live Frankfurter check: rate-limited (429)\n");
+} else {
+    $fparts = preg_split("~\r?\n\r?\n~", $fx, 2);
+    $fheaders = $fparts[0] ?? '';
+    $frows = json_decode($fparts[1] ?? '', true);
+    t_ok($fm[1] === '200', "Frankfurter v2 rates answer 200 without a key (got {$fm[1]})");
+    t_ok((bool)preg_match('~^access-control-allow-origin: (\*|https://swens\.net)~mi', $fheaders),
+        'Frankfurter lets a browser on swens.net call it (CORS header present)');
+    $seen = [];
+    foreach (is_array($frows) ? $frows : [] as $r) {
+        if (isset($r['quote'], $r['rate'], $r['date']) && $r['rate'] > 0) { $seen[$r['quote']] = ($seen[$r['quote']] ?? 0) + 1; }
+    }
+    t_ok(($seen['USD'] ?? 0) >= 3 && ($seen['CRC'] ?? 0) >= 3,
+        'Frankfurter returns daily CAD→USD and CAD→CRC rows (date + quote + rate)');
+}
+
 if ($isStandalone) {
     $t = $GLOBALS['T'];
     echo "\nTESTS: {$t['pass']} passed, {$t['fail']} failed\n";

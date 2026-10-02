@@ -24,9 +24,31 @@
   .cw-change { font-family: var(--font-mono); font-size: 12px; }
   .cw-refresh { color: var(--muted); font-size: 12px; text-decoration: underline; text-underline-offset: 3px; background: none; border: none; cursor: pointer; font: inherit; padding: 0; white-space: nowrap; }
   .cw-empty { color: var(--muted); font-size: 13px; }
+  .cw-fx { margin-top: 40px; }
+  .cw-fx-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 4px; }
+  .cw-fx-head h2 { font-family: var(--font-mono); font-size: 11px; font-weight: 400; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); }
+  .cw-tabs { display: flex; gap: 4px; }
+  .cw-tab { font: inherit; font-size: 13px; color: var(--muted); background: none; border: 1px solid transparent; border-radius: 999px; padding: 5px 12px; cursor: pointer; }
+  .cw-tab:hover { color: var(--text); }
+  .cw-tab[aria-pressed="true"] { color: var(--text); border-color: var(--line); background: var(--panel); }
+  .cw-fx-card { padding: 22px 0 8px; border-bottom: 1px solid var(--line); }
+  .cw-fx-label { font-size: 15px; color: var(--muted); }
+  .cw-fx-value { font-family: var(--font-sans); font-size: 40px; font-weight: 800; letter-spacing: -.03em; line-height: 1.1; margin-top: 2px; }
+  .cw-fx-value small { font-size: 18px; font-weight: 600; letter-spacing: 0; color: var(--muted); margin-left: 6px; }
+  .cw-fx-meta { font-size: 12px; color: var(--muted); margin-top: 6px; min-height: 18px; }
+  .cw-up { color: #81c995; }
+  .cw-down { color: #f28b82; }
+  .cw-fx-chart { margin-top: 10px; touch-action: pan-y; }
+  .cw-fx-chart svg { display: block; width: 100%; height: auto; overflow: visible; }
+  .cw-fx-chart text { font-family: var(--font-sans); font-size: 12px; fill: var(--muted); }
+  .cw-fx-grid { stroke: var(--line); stroke-width: 1; }
+  .cw-fx-cross { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 3 3; }
+  .cw-fx-skel { height: 200px; }
   @media (max-width: 400px) {
     .cw-symbol { display: none; }
     .cw-coin img { width: 16px; height: 16px; }
+    .cw-fx-value { font-size: 34px; }
+    .cw-tab { padding: 5px 9px; }
   }
 </style>
 </head>
@@ -37,6 +59,14 @@
     <span class="cw-meta"><span id="cw-updated">Loading…</span> · <button type="button" class="cw-refresh" onclick="location.reload()">↻ refresh</button></span>
   </div>
   <div id="cw-body"></div>
+
+  <section class="cw-fx" aria-labelledby="cw-fx-title">
+    <div class="cw-fx-head">
+      <h2 id="cw-fx-title">Currency</h2>
+      <div class="cw-tabs" id="cw-tabs" role="group" aria-label="Chart range"></div>
+    </div>
+    <div id="cw-fx"></div>
+  </section>
 </div>
 <script>
 (function () {
@@ -95,6 +125,201 @@
         (e && e.message === 'rate-limited' ? 'Too many reloads — wait a minute and try again.' : 'Prices are unavailable right now — reload in a minute.') +
         '</p>';
     });
+})();
+
+// Currency charts (the Google Finance card): CAD→USD, CAD→CRC, USD→CRC.
+// Frankfurter v2 = ECB daily reference rates, keyless, CORS open, and it carries the colón.
+// Daily data only, so there is no 1D tab.
+(function () {
+  var API = 'https://api.frankfurter.dev/v2/rates?base=CAD&quotes=USD,CRC';
+  var PAIRS = [
+    { label: '1 Canadian Dollar equals', name: 'US Dollar', pick: function (d) { return d.USD; }, dp: 4 },
+    { label: '1 Canadian Dollar equals', name: 'Costa Rican Colón', pick: function (d) { return d.CRC; }, dp: 2 },
+    { label: '1 US Dollar equals', name: 'Costa Rican Colón', pick: function (d) { return d.CRC / d.USD; }, dp: 2 }
+  ];
+  var RANGES = [
+    { k: '5D', days: 14, take: 5, past: 'past 5 days', x: 'day' },
+    { k: '1M', days: 31, past: 'past month', x: 'day' },
+    { k: '1Y', days: 366, past: 'past year', x: 'month' },
+    { k: '5Y', days: 1827, group: 'week', past: 'past 5 years', x: 'year' },
+    { k: 'Max', from: '1999-01-01', group: 'month', past: 'all time', x: 'year' }
+  ];
+  var GREEN = '#81c995', RED = '#f28b82';
+  var tabs = document.getElementById('cw-tabs');
+  var host = document.getElementById('cw-fx');
+  var current = RANGES[1];
+  var cache = {};
+  var cards = [];
+
+  function iso(d) { return d.toISOString().slice(0, 10); }
+  function fmt(n, dp) { return n.toLocaleString('en-CA', { minimumFractionDigits: dp, maximumFractionDigits: dp }); }
+  function dateOf(s) { var p = s.split('-'); return new Date(+p[0], +p[1] - 1, +p[2]); }
+  function fmtDate(s, long) {
+    return dateOf(s).toLocaleDateString('en-CA', long ? { month: 'short', day: 'numeric', year: 'numeric' } : { month: 'short', day: 'numeric' });
+  }
+  function xLabel(s, kind) {
+    var d = dateOf(s);
+    if (kind === 'year') return String(d.getFullYear());
+    if (kind === 'month') return d.toLocaleDateString('en-CA', { month: 'short', year: '2-digit' });
+    return d.toLocaleDateString('en-CA', { month: 'short', day: 'numeric' });
+  }
+
+  // One request per range; rows come back one per (date, quote), so fold them by date.
+  function load(range) {
+    if (cache[range.k]) return cache[range.k];
+    var from = range.from || iso(new Date(Date.now() - range.days * 86400000));
+    var url = API + '&from=' + from + (range.group ? '&group=' + range.group : '');
+    cache[range.k] = fetch(url)
+      .then(function (r) {
+        if (!r.ok) throw new Error('bad status');
+        return r.json();
+      })
+      .then(function (rows) {
+        var by = {}, order = [];
+        rows.forEach(function (r) {
+          if (!by[r.date]) { by[r.date] = { date: r.date }; order.push(r.date); }
+          by[r.date][r.quote] = r.rate;
+        });
+        var days = order.sort().map(function (d) { return by[d]; })
+          .filter(function (d) { return d.USD > 0 && d.CRC > 0; });
+        if (range.take) days = days.slice(-range.take);
+        if (days.length < 2) throw new Error('bad status');
+        return days;
+      })
+      .then(function (days) {
+        // weekly/monthly buckets are averages — end the line on today's real daily rate
+        if (!range.group) return days;
+        return load(RANGES[0]).then(function (recent) {
+          var latest = recent[recent.length - 1];
+          if (latest.date > days[days.length - 1].date) days.push(latest);
+          return days;
+        });
+      })
+      .catch(function (e) { delete cache[range.k]; throw e; });
+    return cache[range.k];
+  }
+
+  function niceStep(span, n) {
+    var raw = span / n, mag = Math.pow(10, Math.floor(Math.log10(raw))), f = raw / mag;
+    return (f < 1.5 ? 1 : f < 3.5 ? 2 : f < 7.5 ? 5 : 10) * mag;
+  }
+
+  function buildCards() {
+    host.innerHTML = '';
+    cards = PAIRS.map(function (p) {
+      var el = document.createElement('div');
+      el.className = 'cw-fx-card';
+      el.innerHTML =
+        '<div class="cw-fx-label">' + p.label + '</div>' +
+        '<div class="cw-fx-value"><span class="v">—</span><small>' + p.name + '</small></div>' +
+        '<div class="cw-fx-meta">Loading…</div>' +
+        '<div class="cw-fx-chart"><div class="cw-fx-skel"></div></div>';
+      host.appendChild(el);
+      return { pair: p, el: el, v: el.querySelector('.v'), meta: el.querySelector('.cw-fx-meta'), chart: el.querySelector('.cw-fx-chart'), pts: null };
+    });
+  }
+
+  function metaFor(c, i) {
+    var pts = c.pts, last = pts[pts.length - 1], first = pts[0];
+    if (i == null || i === pts.length - 1) {
+      var chg = (last.y / first.y - 1) * 100, up = chg >= 0;
+      return fmtDate(last.date, true) + ' · ECB daily rate · <span class="' + (up ? 'cw-up' : 'cw-down') + '">' +
+        (up ? '▲' : '▼') + ' ' + Math.abs(chg).toFixed(2) + '%</span> ' + current.past;
+    }
+    return fmtDate(pts[i].date, true) + ' · ' + (current.group ? (current.group === 'week' ? 'weekly' : 'monthly') + ' average' : 'ECB daily rate');
+  }
+
+  function draw(c) {
+    var pts = c.pts, W = Math.max(280, c.chart.clientWidth || 600), H = 210, L = 40, R = 14, T = 12, B = 26;
+    var ys = pts.map(function (p) { return p.y; });
+    var lo = Math.min.apply(null, ys), hi = Math.max.apply(null, ys);
+    var pad = (hi - lo) * 0.12 || hi * 0.002;
+    lo -= pad; hi += pad;
+    var step = niceStep(hi - lo, 3), tdp = Math.max(0, Math.ceil(-Math.log10(step) - 1e-9));
+    var ticks = [];
+    for (var t = Math.ceil(lo / step) * step; t <= hi + 1e-9; t += step) ticks.push(t);
+    function X(i) { return L + (W - L - R) * i / (pts.length - 1); }
+    function Y(v) { return T + (H - T - B) * (1 - (v - lo) / (hi - lo)); }
+    var up = pts[pts.length - 1].y >= pts[0].y, col = up ? GREEN : RED;
+    var line = pts.map(function (p, i) { return (i ? 'L' : 'M') + X(i).toFixed(1) + ' ' + Y(p.y).toFixed(1); }).join('');
+    var area = line + 'L' + X(pts.length - 1).toFixed(1) + ' ' + (H - B) + 'L' + L + ' ' + (H - B) + 'Z';
+    var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + c.pair.label + ' ' + c.pair.name + ', ' + current.past + '">';
+    ticks.forEach(function (tv) {
+      s += '<line class="cw-fx-grid" x1="' + L + '" x2="' + (W - R) + '" y1="' + Y(tv).toFixed(1) + '" y2="' + Y(tv).toFixed(1) + '"/>' +
+        '<text x="' + (L - 8) + '" y="' + (Y(tv) + 4).toFixed(1) + '" text-anchor="end">' + fmt(tv, tdp) + '</text>';
+    });
+    var n = W < 420 ? 3 : 4;
+    for (var k = 0; k < n; k++) {
+      var i = Math.round((pts.length - 1) * (k + 0.5) / n);
+      s += '<text x="' + X(i).toFixed(1) + '" y="' + (H - 6) + '" text-anchor="middle">' + xLabel(pts[i].date, current.x) + '</text>';
+    }
+    s += '<path d="' + area + '" fill="' + col + '" fill-opacity=".08"/>' +
+      '<path d="' + line + '" fill="none" stroke="' + col + '" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>' +
+      '<line class="cw-fx-cross" y1="' + T + '" y2="' + (H - B) + '" style="display:none"/>' +
+      '<circle r="5" fill="' + col + '" cx="' + X(pts.length - 1).toFixed(1) + '" cy="' + Y(pts[pts.length - 1].y).toFixed(1) + '"/>' +
+      '</svg>';
+    c.chart.innerHTML = s;
+    var svg = c.chart.firstChild, cross = svg.querySelector('.cw-fx-cross'), dot = svg.querySelector('circle');
+
+    function show(i) {
+      dot.setAttribute('cx', X(i).toFixed(1)); dot.setAttribute('cy', Y(pts[i].y).toFixed(1));
+      c.v.textContent = fmt(pts[i].y, c.pair.dp);
+      c.meta.innerHTML = metaFor(c, i);
+      if (i === pts.length - 1) { cross.style.display = 'none'; return; }
+      cross.setAttribute('x1', X(i).toFixed(1)); cross.setAttribute('x2', X(i).toFixed(1)); cross.style.display = '';
+    }
+    function move(ev) {
+      var rect = svg.getBoundingClientRect(), x = (ev.clientX - rect.left) * (W / rect.width);
+      var i = Math.round((x - L) / (W - L - R) * (pts.length - 1));
+      show(Math.max(0, Math.min(pts.length - 1, i)));
+    }
+    svg.addEventListener('pointermove', move);
+    svg.addEventListener('pointerdown', move);
+    svg.addEventListener('pointerleave', function () { show(pts.length - 1); });
+    show(pts.length - 1);
+  }
+
+  function render() {
+    cards.forEach(function (c) { c.chart.innerHTML = '<div class="cw-fx-skel"></div>'; c.meta.textContent = 'Loading…'; });
+    var range = current;
+    load(range).then(function (days) {
+      if (range !== current) return;
+      cards.forEach(function (c) {
+        c.pts = days.map(function (d) { return { date: d.date, y: c.pair.pick(d) }; });
+        draw(c);
+      });
+    }).catch(function () {
+      if (range !== current) return;
+      cards.forEach(function (c) {
+        c.pts = null; c.v.textContent = '—';
+        c.chart.innerHTML = '<p class="cw-empty">Rates are unavailable right now — try again in a minute.</p>';
+        c.meta.textContent = '';
+      });
+    });
+  }
+
+  function paintTabs() {
+    tabs.innerHTML = RANGES.map(function (r) {
+      return '<button type="button" class="cw-tab" data-k="' + r.k + '" aria-pressed="' + (r === current) + '">' + r.k + '</button>';
+    }).join('');
+  }
+  tabs.addEventListener('click', function (e) {
+    var b = e.target.closest('.cw-tab');
+    if (!b) return;
+    current = RANGES.filter(function (r) { return r.k === b.getAttribute('data-k'); })[0];
+    paintTabs();
+    render();
+  });
+
+  var rt;
+  window.addEventListener('resize', function () {
+    clearTimeout(rt);
+    rt = setTimeout(function () { cards.forEach(function (c) { if (c.pts) draw(c); }); }, 150);
+  });
+
+  paintTabs();
+  buildCards();
+  render();
 })();
 </script>
 </body>

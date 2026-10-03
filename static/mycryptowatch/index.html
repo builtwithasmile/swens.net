@@ -8,14 +8,16 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>%F0%9F%AA%99</text></svg>">
 <link rel="stylesheet" href="/assets/css/site.css">
 <style>
-  .cw-page { max-width: 640px; margin: 0 auto; padding: 20px 16px 40px; }
-  .cw-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+  .cw-page { max-width: 1040px; margin: 0 auto; padding: 16px 16px 24px; }
+  .cw-grid { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 28px; align-items: start; }
+  @media (max-width: 820px) { .cw-grid { grid-template-columns: minmax(0, 1fr); gap: 20px; } }
+  .cw-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
   .cw-head h1 { font-family: var(--font-sans); font-size: 17px; font-weight: 700; letter-spacing: -.01em; line-height: 1.2; }
   .cw-meta { font-size: 12px; color: var(--muted); }
   .cw-table-wrap { overflow-x: auto; }
   .cw-table { width: 100%; border-collapse: collapse; font-size: 14px; }
   .cw-table th { text-align: left; font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 400; padding: 0 8px 8px; border-bottom: 1px solid var(--line); white-space: nowrap; }
-  .cw-table td { padding: 10px 8px; border-bottom: 1px solid var(--line); vertical-align: middle; white-space: nowrap; }
+  .cw-table td { padding: 7px 8px; border-bottom: 1px solid var(--line); vertical-align: middle; white-space: nowrap; }
   .cw-table th:not(:first-child), .cw-table td:not(:first-child) { text-align: right; }
   .cw-rank { color: var(--muted); font-family: var(--font-mono); font-size: 12px; }
   .cw-coin { display: flex; align-items: center; gap: 8px; }
@@ -24,31 +26,28 @@
   .cw-change { font-family: var(--font-mono); font-size: 12px; }
   .cw-refresh { color: var(--muted); font-size: 12px; text-decoration: underline; text-underline-offset: 3px; background: none; border: none; cursor: pointer; font: inherit; padding: 0; white-space: nowrap; }
   .cw-empty { color: var(--muted); font-size: 13px; }
-  .cw-fx { margin-top: 40px; }
-  .cw-fx-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 4px; }
+  .cw-fx-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; margin-bottom: 0; padding-bottom: 6px; border-bottom: 1px solid var(--line); }
   .cw-fx-head h2 { font-family: var(--font-mono); font-size: 11px; font-weight: 400; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); }
   .cw-tabs { display: flex; gap: 4px; }
-  .cw-tab { font: inherit; font-size: 13px; color: var(--muted); background: none; border: 1px solid transparent; border-radius: 999px; padding: 5px 12px; cursor: pointer; }
+  .cw-tab { font: inherit; font-size: 12px; color: var(--muted); background: none; border: 1px solid transparent; border-radius: 999px; padding: 3px 9px; cursor: pointer; }
   .cw-tab:hover { color: var(--text); }
   .cw-tab[aria-pressed="true"] { color: var(--text); border-color: var(--line); background: var(--panel); }
-  .cw-fx-card { padding: 22px 0 8px; border-bottom: 1px solid var(--line); }
-  .cw-fx-label { font-size: 15px; color: var(--muted); }
-  .cw-fx-value { font-family: var(--font-sans); font-size: 40px; font-weight: 800; letter-spacing: -.03em; line-height: 1.1; margin-top: 2px; }
-  .cw-fx-value small { font-size: 18px; font-weight: 600; letter-spacing: 0; color: var(--muted); margin-left: 6px; }
-  .cw-fx-meta { font-size: 12px; color: var(--muted); margin-top: 6px; min-height: 18px; }
+  .cw-fx-card { padding: 10px 0 2px; border-bottom: 1px solid var(--line); }
+  .cw-fx-label { font-size: 12px; color: var(--muted); }
+  .cw-fx-value { font-family: var(--font-sans); font-size: 26px; font-weight: 800; letter-spacing: -.03em; line-height: 1.1; }
+  .cw-fx-value small { font-size: 13px; font-weight: 600; letter-spacing: 0; color: var(--muted); margin-left: 6px; }
+  .cw-fx-meta { font-size: 11px; color: var(--muted); margin-top: 2px; min-height: 15px; }
   .cw-up { color: #81c995; }
   .cw-down { color: #f28b82; }
-  .cw-fx-chart { margin-top: 10px; touch-action: pan-y; }
+  .cw-fx-chart { margin-top: 2px; touch-action: pan-y; }
   .cw-fx-chart svg { display: block; width: 100%; height: auto; overflow: visible; }
-  .cw-fx-chart text { font-family: var(--font-sans); font-size: 12px; fill: var(--muted); }
+  .cw-fx-chart text { font-family: var(--font-sans); font-size: 10px; fill: var(--muted); }
   .cw-fx-grid { stroke: var(--line); stroke-width: 1; }
   .cw-fx-cross { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 3 3; }
-  .cw-fx-skel { height: 200px; }
+  .cw-fx-skel { height: 118px; }
   @media (max-width: 400px) {
     .cw-symbol { display: none; }
     .cw-coin img { width: 16px; height: 16px; }
-    .cw-fx-value { font-size: 34px; }
-    .cw-tab { padding: 5px 9px; }
   }
 </style>
 </head>
@@ -58,15 +57,16 @@
     <h1>Crypto Watch</h1>
     <span class="cw-meta"><span id="cw-updated">Loading…</span> · <button type="button" class="cw-refresh" onclick="location.reload()">↻ refresh</button></span>
   </div>
-  <div id="cw-body"></div>
-
-  <section class="cw-fx" aria-labelledby="cw-fx-title">
-    <div class="cw-fx-head">
-      <h2 id="cw-fx-title">Currency</h2>
-      <div class="cw-tabs" id="cw-tabs" role="group" aria-label="Chart range"></div>
-    </div>
-    <div id="cw-fx"></div>
-  </section>
+  <div class="cw-grid">
+    <div id="cw-body"></div>
+    <section class="cw-fx" aria-labelledby="cw-fx-title">
+      <div class="cw-fx-head">
+        <h2 id="cw-fx-title">Currency</h2>
+        <div class="cw-tabs" id="cw-tabs" role="group" aria-label="Chart range"></div>
+      </div>
+      <div id="cw-fx"></div>
+    </section>
+  </div>
 </div>
 <script>
 (function () {
@@ -230,7 +230,7 @@
   }
 
   function draw(c) {
-    var pts = c.pts, W = Math.max(280, c.chart.clientWidth || 600), H = 210, L = 40, R = 14, T = 12, B = 26;
+    var pts = c.pts, W = Math.max(280, c.chart.clientWidth || 600), H = 118, L = 36, R = 8, T = 6, B = 16;
     var ys = pts.map(function (p) { return p.y; });
     var lo = Math.min.apply(null, ys), hi = Math.max.apply(null, ys);
     var pad = (hi - lo) * 0.12 || hi * 0.002;

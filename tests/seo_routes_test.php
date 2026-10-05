@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * seo_routes_test.php — robots.txt and sitemap.xml over real HTTP.
+ * seo_routes_test.php — robots.txt, sitemap.xml, canonical + og:image, over real HTTP.
  *
  * Starts `php -S` on 127.0.0.1 against public/ and fetches real responses, so the status,
  * content-type and body are what a crawler sees. The sitemap must list every public route
@@ -100,6 +100,24 @@ if ($up) {
         t_ok(!preg_match('~^https://swens\.net/(admin|gate|inside|office|key)(/|$)~', $loc), "no non-public route in the sitemap: $loc");
     }
 
+    // --- canonical + og:image on every public page the layout renders ---
+    foreach (['/', '/gate', '/office'] as $path) {
+        $r = $get($path);
+        if ($r['status'] !== 200) { continue; }   // /office needs a DB when DB_HOST is configured
+        t_ok(preg_match('~<link rel="canonical" href="([^"]+)">~', $r['body'], $m) === 1, "$path has a canonical");
+        t_ok(($m[1] ?? '') === $origin . ($path === '/' ? '/' : $path), "$path canonical is the site origin + the request path");
+        t_ok(preg_match('~<meta property="og:image" content="([^"]+)">~', $r['body'], $im) === 1, "$path has og:image");
+        $imgPath = parse_url($im[1] ?? '', PHP_URL_PATH);
+        t_ok(is_string($imgPath) && str_starts_with($im[1], $origin . '/') && is_file($root . '/public' . $imgPath),
+            "$path og:image resolves to a file in public/");
+        t_ok(preg_match('~<meta name="description" content="([^"]+)">~', $r['body'], $dm) === 1, "$path has a non-empty meta description");
+    }
+    $home = $get('/');
+    t_ok($home['status'] === 200, 'home renders 200');
+    $canonQ = $get('/gate?x=1');
+    if ($canonQ['status'] === 200) {
+        t_ok(str_contains($canonQ['body'], '<link rel="canonical" href="https://swens.net/gate">'), 'canonical drops the query string');
+    }
 }
 if (is_resource($proc)) {
     $st = proc_get_status($proc);
@@ -114,6 +132,10 @@ $sRobots = (string)@file_get_contents($root . '/static/robots.txt');
 t_ok($sRobots === \App\Controllers\Web\SeoController::robotsBody(), 'static/robots.txt equals the router robots body');
 $sMap = (string)@file_get_contents($root . '/static/sitemap.xml');
 t_ok($sMap === \App\Controllers\Web\SeoController::sitemapBody($public), 'static/sitemap.xml equals the router sitemap body');
+$sHome = (string)@file_get_contents($root . '/static/index.html');
+t_ok(str_contains($sHome, '<link rel="canonical" href="https://swens.net/">'), 'static home has a self-referencing canonical');
+t_ok(preg_match('~<meta property="og:image" content="https://swens\.net(/[^"]+)">~', $sHome, $sm2) === 1
+    && is_file($root . '/static' . $sm2[1]), 'static home og:image resolves to a file in static/');
 
 if ($isStandalone) {
     $t = $GLOBALS['T'];

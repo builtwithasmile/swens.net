@@ -4,10 +4,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title><?= e($title ?? 'swens.net') ?></title>
-  <meta name="description" content="<?= e($meta_desc ?? '') ?>">
+  <meta name="description" content="<?= e(($meta_desc ?? '') !== '' ? $meta_desc : site_default_description()) ?>">
+  <link rel="canonical" href="<?= e($canonical ?? canonical_url()) ?>">
   <meta name="robots" content="<?= e($robots ?? 'index,follow') ?>">
   <meta property="og:title" content="<?= e($title ?? 'swens.net') ?>">
-  <meta property="og:description" content="<?= e($meta_desc ?? '') ?>">
+  <meta property="og:description" content="<?= e(($meta_desc ?? '') !== '' ? $meta_desc : site_default_description()) ?>">
+  <meta property="og:image" content="<?= e(site_og_image()) ?>">
+  <meta property="og:url" content="<?= e($canonical ?? canonical_url()) ?>">
   <meta property="og:type" content="website">
   <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
   <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">

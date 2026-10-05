@@ -53,3 +53,19 @@ until Josh says so AND it appears here with a test.
 - static/sitemap.xml =~ <loc>https://swens\.net/</loc>
 **Test:** tests/seo_routes_test.php
 **Assumptions:** the sitemap lists only GET routes with no middleware and no {param} outside /admin /gate /inside /office (so today just `/`); /mycryptowatch/ is static and noindex, so it is not listed. The live site is served from static/, so static/robots.txt and static/sitemap.xml are held equal to the router output by the test.
+
+## seo-canonical-ogimage
+**Name:** Self-referencing canonical, og:image, og:url and a meta-description fallback on every public page (PHP layout + static home)
+**Files:**
+- templates/layouts/site.php
+- static/index.html
+- public/assets/swens-mark.svg
+- core/helpers.php
+- tests/seo_routes_test.php
+**Contains:**
+- templates/layouts/site.php =~ rel="canonical"
+- templates/layouts/site.php =~ og:image
+- static/index.html =~ rel="canonical" href="https://swens\.net/"
+- static/index.html =~ og:image
+**Test:** tests/seo_routes_test.php
+**Assumptions:** canonical = SITE_URL (default https://swens.net) + request path, query dropped; og:image is the only image the repo ships that is not an icon (an SVG, /assets/swens-mark.svg), a 1200x630 raster would share better but needs Josh's design; the description falls back to the home page's existing sentence (site_default_description()).

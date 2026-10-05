@@ -168,7 +168,7 @@
     .catch(function (e) {
       updated.textContent = 'Updated —';
       body.innerHTML = '<p class="cw-empty">' +
-        (e && e.message === 'rate-limited' ? 'Too many reloads — wait a minute and try again.' : 'Prices are unavailable right now — reload in a minute.') +
+        (e && e.message === 'rate-limited' ? 'Too many reloads. Wait a minute and try again.' : 'Prices are unavailable right now. Reload in a minute.') +
         '</p>';
     });
 })();
@@ -338,7 +338,7 @@
       if (range !== current) return;
       cards.forEach(function (c) {
         c.pts = null; c.v.textContent = '—';
-        c.chart.innerHTML = '<p class="cw-empty">Rates are unavailable right now — try again in a minute.</p>';
+        c.chart.innerHTML = '<p class="cw-empty">Rates are unavailable right now. Try again in a minute.</p>';
         c.meta.textContent = '';
       });
     });

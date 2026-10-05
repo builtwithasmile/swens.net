@@ -25,3 +25,12 @@ until Josh says so AND it appears here with a test.
 - static/mycryptowatch/index.html =~! frankfurter.app
 **Test:** tests/mycryptowatch_test.php
 **Assumptions:** Frankfurter v2 (ECB reference rates, daily only — so no 1D tab) stays keyless, browser-callable, and keeps CRC history; USD→CRC is derived as CRC/USD from the same CAD rows.
+
+## template-exists-guard
+**Name:** Template/partial existence guard — a deleted or misnamed page, layout or partial turns the suite red instead of 500-ing every page
+**Files:**
+- tests/template_exists_test.php
+**Contains:**
+- tests/template_exists_test.php =~ templates/layouts/
+**Test:** tests/template_exists_test.php
+**Assumptions:** templates are named by plain string literals in Template::render()/partial() calls (a dynamic name fails the test as unverifiable); lives in its own file so the synced tests/route_handler_test.php stays untouched.

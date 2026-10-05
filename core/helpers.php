@@ -135,3 +135,32 @@ function send_mail(string $to, string $subject, string $body, string|array $head
     $envelopeFrom = (defined('MAIL_FROM') && MAIL_FROM !== '') ? '-f' . MAIL_FROM : '';
     return @mail($to, $subject, $body, $headerString, $envelopeFrom);
 }
+
+/** Public origin used in canonical, og:image, sitemap (SITE_URL config constant, else the live host). */
+function site_url(): string
+{
+    return rtrim((string) config('SITE_URL', 'https://swens.net'), '/');
+}
+
+/** Self-referencing canonical: the site origin plus the request path (query string dropped). */
+function canonical_url(?string $path = null): string
+{
+    if ($path === null) {
+        $path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
+    }
+    $path = is_string($path) && $path !== '' ? $path : '/';
+    $path = rtrim($path, '/');
+    return site_url() . ($path === '' ? '/' : $path);
+}
+
+/** The site-wide meta description (the home page's), used where a page supplies none. */
+function site_default_description(): string
+{
+    return 'I\'m Josh. Online I go by Swens. IT, retail, and hospitality, built and run out of Canada and Costa Rica.';
+}
+
+/** The share image the repo ships (served from public/assets and static/assets). */
+function site_og_image(): string
+{
+    return site_url() . '/assets/swens-mark.svg';
+}

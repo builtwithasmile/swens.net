@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /gate
+Disallow: /inside
+Disallow: /office
+
+Sitemap: https://swens.net/sitemap.xml

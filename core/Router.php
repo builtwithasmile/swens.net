@@ -45,6 +45,30 @@ class Router
         ];
     }
 
+    /**
+     * Paths of the public, crawlable pages: GET routes with no middleware and no {param},
+     * outside every $disallow prefix. Feeds sitemap.xml so it cannot drift from routes.php.
+     * @param string[] $disallow path prefixes (e.g. '/admin') that are not public pages
+     * @return string[]
+     */
+    public function publicPaths(array $disallow = []): array
+    {
+        $out = [];
+        foreach ($this->routes as $route) {
+            $p = $route['pattern'];
+            if ($route['method'] !== 'GET' || $route['middleware'] !== [] || str_contains($p, '{')) {
+                continue;
+            }
+            foreach ($disallow as $prefix) {
+                if ($p === $prefix || str_starts_with($p, rtrim($prefix, '/') . '/')) {
+                    continue 2;
+                }
+            }
+            $out[$p] = true;
+        }
+        return array_keys($out);
+    }
+
     public function dispatch(Request $request, Response $response): void
     {
         $method = $request->method();

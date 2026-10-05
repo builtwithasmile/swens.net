@@ -25,6 +25,22 @@ class Response
         exit;
     }
 
+    public function text(string $body, int $status = 200): never
+    {
+        http_response_code($status);
+        header('Content-Type: text/plain; charset=utf-8');
+        echo $body;
+        exit;
+    }
+
+    public function xml(string $body, int $status = 200): never
+    {
+        http_response_code($status);
+        header('Content-Type: application/xml; charset=utf-8');
+        echo $body;
+        exit;
+    }
+
     public function redirect(string $url, int $status = 302): never
     {
         header('Location: ' . $url, true, $status);

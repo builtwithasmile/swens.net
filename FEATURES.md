@@ -36,3 +36,20 @@ until Josh says so AND it appears here with a test.
 - tests/template_exists_test.php =~ templates/layouts/
 **Test:** tests/template_exists_test.php
 **Assumptions:** templates are named by plain string literals in Template::render()/partial() calls (a dynamic name fails the test as unverifiable); lives in its own file so the synced tests/route_handler_test.php stays untouched.
+
+## seo-robots-sitemap
+**Name:** robots.txt and sitemap.xml, built from the route table so they cannot drift (PHP router routes + static/ copies for the live docroot)
+**Files:**
+- controllers/web/SeoController.php
+- core/Router.php
+- routes.php
+- static/robots.txt
+- static/sitemap.xml
+- tests/seo_routes_test.php
+**Contains:**
+- routes.php =~ /sitemap\.xml
+- routes.php =~ /robots\.txt
+- static/robots.txt =~ Disallow: /admin
+- static/sitemap.xml =~ <loc>https://swens\.net/</loc>
+**Test:** tests/seo_routes_test.php
+**Assumptions:** the sitemap lists only GET routes with no middleware and no {param} outside /admin /gate /inside /office (so today just `/`); /mycryptowatch/ is static and noindex, so it is not listed. The live site is served from static/, so static/robots.txt and static/sitemap.xml are held equal to the router output by the test.

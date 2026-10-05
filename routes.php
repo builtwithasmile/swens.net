@@ -4,6 +4,7 @@ declare(strict_types=1);
 use App\Controllers\Web\SiteController;
 use App\Controllers\Web\GateController;
 use App\Controllers\Web\KeyController;
+use App\Controllers\Web\SeoController;
 use App\Controllers\Web\InsideController;
 use App\Controllers\Admin\AuthController;
 use App\Controllers\Admin\PostsController;
@@ -17,6 +18,8 @@ use App\Middleware\KeyedOnly;
 $app->router->get('/',       [SiteController::class, 'home']);
 $app->router->get('/office', [SiteController::class, 'office']);
 $app->router->get('/gate',   [GateController::class, 'show']);
+$app->router->get('/robots.txt',  [SeoController::class, 'robots']);
+$app->router->get('/sitemap.xml', [SeoController::class, 'sitemap']);
 $app->router->post('/gate',  [GateController::class, 'submit']);
 
 // --- Keyed visitor key (no middleware: this IS the door) ---

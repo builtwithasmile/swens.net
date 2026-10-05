@@ -13,11 +13,12 @@ Josh Swenson.
 - **MySQL** — app data (posts, members, audit log, sessions). Config: `DB_*`
   constants in `config.php`; currently commented out in `config.example.php`
   (Session 2 gate — not active until uncommented, see Admin panel below).
-- **CoinPaprika public tickers API** — client-side only, no account or API key.
+- **Kraken public API (Ticker + OHLC)** — client-side only, no account or API key.
   Fetched directly from the visitor's browser by `static/mycryptowatch/index.html`
-  (a standalone static page, not part of the PHP app) to show top-10 CAD crypto
-  prices; coin icons come from CoinCap's icon CDN (`assets.coincap.io`). Replaced
-  CoinGecko 2026-09-29 after its keyless markets endpoint began answering 403.
+  (a standalone static page, not part of the PHP app) to show BTC, ETH, XRP, SOL, USDT
+  and USDC in CAD; coin icons come from CoinCap's icon CDN (`assets.coincap.io`). Replaced
+  CoinPaprika 2026-10-05 (CoinGecko before it, 2026-09-29, after its keyless endpoint began
+  answering 403).
 
 ## Cron jobs
 See `ops/crons.manifest`. Only `bin/backup.php` is a real (intended) cron; it is

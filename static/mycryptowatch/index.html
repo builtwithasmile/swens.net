@@ -19,7 +19,6 @@
   .cw-table th { text-align: left; font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 400; padding: 0 8px 8px; border-bottom: 1px solid var(--line); white-space: nowrap; }
   .cw-table td { padding: 7px 8px; border-bottom: 1px solid var(--line); vertical-align: middle; white-space: nowrap; }
   .cw-table th:not(:first-child), .cw-table td:not(:first-child) { text-align: right; }
-  .cw-rank { color: var(--muted); font-family: var(--font-mono); font-size: 12px; }
   .cw-coin { display: flex; align-items: center; gap: 8px; }
   .cw-coin img { width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0; }
   .cw-symbol { color: var(--muted); text-transform: uppercase; font-size: 11px; }
@@ -84,39 +83,86 @@
     });
   }
 
-  // CoinPaprika: no key, browser calls allowed. CoinGecko's keyless markets call
-  // started answering 403 in Sept 2026; CryptoCompare now demands a key too.
-  fetch('https://api.coinpaprika.com/v1/tickers?quotes=CAD', { cache: 'no-store' })
-    .then(function (r) {
+  // Kraken public API: no key, browser calls allowed (CORS echoes the origin). The ticker
+  // gives the CAD price; its "open" is since midnight UTC, so the 24h change comes from the
+  // hourly candle that contains "now minus 24h" (OHLC, since = now - 25h).
+  var COINS = [
+    { sym: 'BTC', name: 'Bitcoin', pair: 'XBTCAD', keys: ['XXBTZCAD', 'XBTCAD'] },
+    { sym: 'ETH', name: 'Ethereum', pair: 'ETHCAD', keys: ['XETHZCAD', 'ETHCAD'] },
+    { sym: 'XRP', name: 'XRP', pair: 'XRPCAD', keys: ['XXRPZCAD', 'XRPCAD'] },
+    { sym: 'SOL', name: 'Solana', pair: 'SOLCAD', keys: ['SOLCAD'] },
+    { sym: 'USDT', name: 'Tether', pair: 'USDTCAD', keys: ['USDTZCAD', 'USDTCAD'] },
+    { sym: 'USDC', name: 'USDC', pair: 'USDCCAD', keys: ['USDCCAD'] }
+  ];
+  var KRAKEN = 'https://api.kraken.com/0/public/';
+
+  /* cw-parse:start */
+  // Pure: (Ticker result, { SYM: OHLC result | null }, now in unix seconds) -> display rows.
+  function krakenRows(tickerResult, ohlcBySym, nowSec) {
+    function pick(obj, keys) {
+      for (var i = 0; i < keys.length; i++) { if (obj && obj[keys[i]]) return obj[keys[i]]; }
+      return null;
+    }
+    var rows = [];
+    COINS.forEach(function (c) {
+      var t = pick(tickerResult, c.keys);
+      var price = t ? parseFloat(t.c && t.c[0]) : NaN;
+      if (!(price > 0)) return;
+      var change = null, candles = pick(ohlcBySym[c.sym], c.keys);
+      if (candles && candles.length) {
+        var target = nowSec - 86400, ref = null;
+        candles.forEach(function (k) { if (k[0] <= target) ref = k; });
+        var open = ref ? parseFloat(ref[1]) : NaN;
+        if (open > 0) change = (price / open - 1) * 100;
+      }
+      rows.push({ symbol: c.sym, name: c.name, price: price, change: change });
+    });
+    return rows;
+  }
+  /* cw-parse:end */
+
+  function krakenGet(path) {
+    return fetch(KRAKEN + path, { cache: 'no-store' }).then(function (r) {
       if (!r.ok) throw new Error(r.status === 429 ? 'rate-limited' : 'bad status');
       return r.json();
+    }).then(function (j) {
+      if (j.error && j.error.length) throw new Error(/rate limit/i.test(j.error.join(' ')) ? 'rate-limited' : 'bad status');
+      return j.result;
+    });
+  }
+
+  var since = Math.floor(Date.now() / 1000) - 90000;
+  var ohlc = COINS.map(function (c) {
+    // a missing candle list only blanks that coin's 24h cell, never the table
+    return krakenGet('OHLC?pair=' + c.pair + '&interval=60&since=' + since).catch(function () { return null; });
+  });
+  krakenGet('Ticker?pair=' + COINS.map(function (c) { return c.pair; }).join(','))
+    .then(function (ticker) {
+      return Promise.all(ohlc).then(function (list) {
+        var by = {};
+        COINS.forEach(function (c, i) { by[c.sym] = list[i]; });
+        return krakenRows(ticker, by, Math.floor(Date.now() / 1000));
+      });
     })
-    .then(function (all) {
-      var coins = all
-        .filter(function (c) { return c.rank > 0 && c.quotes && c.quotes.CAD; })
-        .sort(function (a, b) { return a.rank - b.rank; })
-        .slice(0, 10);
+    .then(function (coins) {
       if (!coins.length) throw new Error('bad status');
       updated.textContent = 'Updated ' + new Date().toLocaleString('en-CA');
-      var rows = coins.map(function (c, i) {
-        var q = c.quotes.CAD;
-        var chg = q.percent_change_24h || 0;
-        var arrow = chg >= 0 ? '▲' : '▼';
-        var icon = 'https://assets.coincap.io/assets/icons/' + encodeURIComponent(String(c.symbol).toLowerCase()) + '@2x.png';
+      var rows = coins.map(function (c) {
+        var chg = c.change, arrow = chg == null ? '' : (chg >= 0 ? '▲ ' : '▼ ');
+        var icon = 'https://assets.coincap.io/assets/icons/' + encodeURIComponent(c.symbol.toLowerCase()) + '@2x.png';
         return '<tr>' +
-          '<td class="cw-rank">' + (i + 1) + '</td>' +
           '<td><div class="cw-coin">' +
             '<img src="' + esc(icon) + '" alt="" onerror="this.remove()">' +
             '<span>' + esc(c.name) + '</span>' +
             '<span class="cw-symbol">' + esc(c.symbol) + '</span>' +
           '</div></td>' +
-          '<td>' + fmtPrice(q.price || 0) + '</td>' +
-          '<td class="cw-change">' + arrow + ' ' + Math.abs(chg).toFixed(2) + '%</td>' +
+          '<td>' + fmtPrice(c.price) + '</td>' +
+          '<td class="cw-change">' + (chg == null ? '—' : arrow + Math.abs(chg).toFixed(2) + '%') + '</td>' +
         '</tr>';
       }).join('');
       body.innerHTML =
         '<div class="cw-table-wrap"><table class="cw-table"><thead><tr>' +
-        '<th>#</th><th>Coin</th><th>Price (CAD)</th><th>24h</th>' +
+        '<th>Coin</th><th>Price (CAD)</th><th>24h</th>' +
         '</tr></thead><tbody>' + rows + '</tbody></table></div>';
     })
     .catch(function (e) {

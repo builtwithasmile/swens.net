@@ -5,15 +5,17 @@ Format + rules: the factory template's FEATURES.md (`## id` headings, then **Fil
 until Josh says so AND it appears here with a test.
 
 ## crypto-watch
-**Name:** Crypto Watch — top-10 crypto prices in CAD at https://swens.net/mycryptowatch/
+**Name:** Crypto Watch — Bitcoin, Ethereum, XRP, Solana, Tether, USDC prices in CAD (Kraken) at https://swens.net/mycryptowatch/
 **Files:**
 - static/mycryptowatch/index.html
 - tests/mycryptowatch_test.php
+- tests/fixtures/kraken/ticker.json
 **Contains:**
-- static/mycryptowatch/index.html =~ api.coinpaprika.com/v1/tickers\?quotes=CAD
+- static/mycryptowatch/index.html =~ api.kraken.com/0/public/
 - static/mycryptowatch/index.html =~! api.coingecko.com
+- static/mycryptowatch/index.html =~! (?i)coinpaprika
 **Test:** tests/mycryptowatch_test.php
-**Assumptions:** CoinPaprika's free tickers API stays keyless and browser-callable; board item SN-0025 carries the move to Kraken's own CAD prices.
+**Assumptions:** Kraken's public Ticker + OHLC stay keyless and browser-callable; fixed list of six coins (no auto top 10, Josh's ruling 2026-10-05); Kraken's ticker open is since midnight UTC, so the 24h change is read from the hourly OHLC candle containing now-24h (a failed OHLC call shows a dash for that coin, never a made-up number). Parse function checked in node against a real capture in tests/fixtures/kraken/.
 
 ## fx-watch
 **Name:** Currency charts on Crypto Watch — CAD→USD, CAD→CRC (colón), USD→CRC, range tabs 5D/1M/1Y/5Y/Max

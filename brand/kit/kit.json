@@ -1,0 +1,34 @@
+{
+  "name": "swens.net",
+  "label": "Swens",
+  "base": "f8320cf3854877c08286ba0ce6935fc504bd6274",
+  "source": "public/assets/swens-mark.svg",
+  "provenance": "Reused public/assets/swens-mark.svg at f8320cf3854877c08286ba0ce6935fc504bd6274.",
+  "served": [
+    "public/favicon.ico"
+  ],
+  "wired": [],
+  "sha256": {
+    ".gitattributes": "6ed5bc5d105b6698c239139efaafce30f13f253548dfd2803e599897a527ca28",
+    "apple-touch-icon.png": "f812a91de70ebf485b71b4574a35d138547335a73d1f2742d7487cf2d156681e",
+    "favicon-16.png": "f2e39b12ccfcaca8541bed9099067767555ab0a14a779c3a19806f25e2add167",
+    "favicon-32.png": "1284621dcb877f060f9fc069a8366db1bf183b8ef713c390257971235b4b092c",
+    "favicon-48.png": "f4e761909d9d4e395c701a0d3654c730c12ba2f2ea09ae7cfc4a2a649d89d240",
+    "favicon.ico": "aa1aadca09b79b34afdfa95303cc4cdf9c9580e607ec369df070c42aec9bf64d",
+    "favicon.svg": "875f5904acc206806e3e9864c862dc67cf75ccea874ff3b61b59a3587ffcda44",
+    "head.html": "bbb0c4fc5e68911ba1abcca0ea42927fab6c8f236a22b4cc5891e25b9474d649",
+    "icon-1024.png": "4b2f1f68c8c72f3cb1c73355576efed261323e76563219ee34dc8fed9f4e04af",
+    "icon-192.png": "d2e86938c517c2bda660b2e1807b471fb7dc40c41842b7689656a13270075920",
+    "icon-512-maskable.png": "1e3af1a2f8a505579b0c638066cbd366b0bdcab38ac11c5ac39c75eb352bf347",
+    "icon-512.png": "250741b198e6283eacbadeace4793280d8fe7c52fdfab389d141907caa330690",
+    "icon.svg": "875f5904acc206806e3e9864c862dc67cf75ccea874ff3b61b59a3587ffcda44",
+    "logo-light.png": "b3be5f8a26a18640f99371535928ad45b719da2fd7859c73622bf970d40ce605",
+    "logo-light.svg": "7e7974a6d1f28bf08fa7d9f6dfb875339901ed239d81c5e5ffe86da9cca92438",
+    "logo.png": "44db70a3e2ba43cda8a2861e79d80d1e5ecba9b44ac17c94b4902495e8941b5c",
+    "logo.svg": "e3b9e60acbe9466f6ebc7ac2864a86598e516c00224bc3a425d6191b803e658d",
+    "palette.css": "c58bbe540b99b15d6f64a7285b812d47f59090fdc3ff4c34dac0933af650ccba",
+    "preview.html": "40682e341305d53b585f5164d69f66a7328bf7e602848c5fc084b4395d812f23",
+    "README.md": "ced9a19014d59b1390116bba7d0a74bac9cbb663a3e48bb9d761141b2eb0b49e",
+    "site.webmanifest": "6e502924404a6db516a3f718f014eb8a2ab618211903f9a085ee5a5a70ae6245"
+  }
+}

@@ -27,3 +27,5 @@ Served copies: `public/favicon.ico`. Regenerate these copies from this kit after
 Existing icon links stay in place; the root ICO covers pages without an icon link.
 
 Served copies: `public/favicon.ico`. Regenerate these copies from this kit after changing its artwork.
+
+The existing site layouts and manifest request `/assets/favicon.svg` and `/assets/favicon-32.png`. Those served copies now exist and use the existing Swens mark.

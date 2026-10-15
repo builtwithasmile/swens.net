@@ -5,6 +5,8 @@
   "source": "public/assets/swens-mark.svg",
   "provenance": "Reused public/assets/swens-mark.svg at f8320cf3854877c08286ba0ce6935fc504bd6274.",
   "served": [
+    "public/assets/favicon-32.png",
+    "public/assets/favicon.svg",
     "public/favicon.ico"
   ],
   "wired": [],
@@ -28,7 +30,7 @@
     "logo.svg": "e3b9e60acbe9466f6ebc7ac2864a86598e516c00224bc3a425d6191b803e658d",
     "palette.css": "c58bbe540b99b15d6f64a7285b812d47f59090fdc3ff4c34dac0933af650ccba",
     "preview.html": "40682e341305d53b585f5164d69f66a7328bf7e602848c5fc084b4395d812f23",
-    "README.md": "ced9a19014d59b1390116bba7d0a74bac9cbb663a3e48bb9d761141b2eb0b49e",
+    "README.md": "b6d6b5645b67f503a9fcf8dbd847f8c19dbec909f796f50e91f4fc161bff30d4",
     "site.webmanifest": "6e502924404a6db516a3f718f014eb8a2ab618211903f9a085ee5a5a70ae6245"
   }
 }

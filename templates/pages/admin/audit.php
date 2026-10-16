@@ -5,12 +5,12 @@
 
 <table>
 <thead>
-  <tr><th>When (UTC)</th><th>Action</th><th>Subject</th><th>IP</th></tr>
+  <tr><th>When</th><th>Action</th><th>Subject</th><th>IP</th></tr>
 </thead>
 <tbody>
 <?php foreach ($log ?? [] as $row): ?>
 <tr>
-  <td style="color:var(--muted)"><?= e($row['created_at']) ?></td>
+  <td style="color:var(--muted)"><?= e(\App\Services\LocalTime::show((string) $row['created_at'])) ?></td>
   <td><?= e($row['action']) ?></td>
   <td style="color:var(--muted)"><?= e($row['subject'] ?? '') ?></td>
   <td style="color:var(--muted)"><?= e($row['ip'] ?? '') ?></td>

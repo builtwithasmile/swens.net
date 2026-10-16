@@ -12,8 +12,10 @@
   <meta property="og:image" content="<?= e(site_og_image()) ?>">
   <meta property="og:url" content="<?= e($canonical ?? canonical_url()) ?>">
   <meta property="og:type" content="website">
-  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
-  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/assets/favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" sizes="180x180">
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#16202a">
   <link rel="preconnect" href="https://fonts.googleapis.com">

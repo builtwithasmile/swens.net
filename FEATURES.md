@@ -69,3 +69,23 @@ until Josh says so AND it appears here with a test.
 - static/index.html =~ og:image
 **Test:** tests/seo_routes_test.php
 **Assumptions:** canonical = SITE_URL (default https://swens.net) + request path, query dropped; og:image is the only image the repo ships that is not an icon (an SVG, /assets/swens-mark.svg), a 1200x630 raster would share better but needs Josh's design; the description falls back to the home page's existing sentence (site_default_description()).
+
+## brand-kit-icons
+**Name:** Favicon, apple-touch-icon and web-manifest icons come from the brand kit (brand/kit/) on every page head, PHP layouts and live static pages
+**Files:**
+- templates/layouts/site.php
+- templates/layouts/bare.php
+- static/index.html
+- static/mycryptowatch/index.html
+- public/manifest.json
+- public/assets/apple-touch-icon.png
+- static/assets/apple-touch-icon.png
+- tests/brand_kit_wire_test.php
+**Contains:**
+- templates/layouts/site.php =~ apple-touch-icon
+- templates/layouts/bare.php =~ apple-touch-icon
+- static/index.html =~ apple-touch-icon
+- static/mycryptowatch/index.html =~ apple-touch-icon
+- public/manifest.json =~ icon-512-maskable
+**Test:** tests/brand_kit_wire_test.php
+**Assumptions:** served copies are byte-equal to brand/kit/ (never a /brand/ path, which .htaccess 403s); the manifest keeps its own name, start_url and colours, only icons changed; static/ got its own copies because it is the live docroot.

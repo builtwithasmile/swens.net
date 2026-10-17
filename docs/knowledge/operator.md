@@ -41,3 +41,5 @@ static page under `static/`, served from the OVH/CloudPanel box and deployed
 with `dploy deploy main` (no cPanel involved; `.cpanel.yml`'s deploy task was
 the app's disabled placeholder from the old cPanel-hosting era and stays
 inert). Deploy history and revival steps live in `memory/state.md`, not here.
+
+The example config sets APP_TIMEZONE to America/Vancouver (swens.net apps show Vancouver time).

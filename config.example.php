@@ -9,7 +9,7 @@ declare(strict_types=1);
 // ---------- Environment ----------
 define('APP_ENV', 'production');            // 'production' | 'development'
 define('APP_URL', 'https://swens.net');
-define('APP_TIMEZONE', 'America/Costa_Rica');
+define('APP_TIMEZONE', 'America/Vancouver');
 
 // ---------- Session ----------
 define('SESSION_NAME', 'swens_session');

@@ -48,6 +48,26 @@ t_ok(str_contains($page, 'onerror="this.remove()"'),
 t_ok(str_contains($page, 'Prices are unavailable right now'),
     'the unavailable-prices error state is still on the page');
 
+// Gap: the Ticker is the one call that decides whether the table renders, so it must go out
+// BEFORE the six OHLC calls; a rate-limited burst then blanks only the 24h cells, not the table.
+$tickerAt = strpos($page, "krakenGet('Ticker?pair='");
+$ohlcAt = strpos($page, "krakenGet('OHLC?pair='");
+t_ok($tickerAt !== false && $ohlcAt !== false && $tickerAt < $ohlcAt,
+    'the Ticker request is sent before the OHLC burst (a rate-limited burst cannot blank the table)');
+
+// Gap: the live check must read its pairs and keys from the page's own COINS, never a copy.
+$pageCoins = [];
+if (preg_match_all("~pair: '([A-Z]+)', keys: \[([^\]]*)\]~", $page, $cm, PREG_SET_ORDER)) {
+    foreach ($cm as $c) {
+        preg_match_all("~'([A-Z]+)'~", $c[2], $km);
+        $pageCoins[$c[1]] = $km[1];
+    }
+}
+t_ok(count($pageCoins) === 6, 'the page COINS table (pair + keys) can be read by the test (6 coins)');
+$selfSrc = (string)file_get_contents(__FILE__);
+t_ok(!str_contains($selfSrc, 'Ticker?pair=' . 'XBTCAD,') && !str_contains($selfSrc, '[' . "'XXBTZCAD', 'XETHZCAD'"),
+    'the live Kraken check takes its pairs and keys from the page COINS, not a hardcoded copy');
+
 // --- parse: the page's krakenRows() against a real Kraken capture -----------------------------
 $fx = dirname(__DIR__) . '/tests/fixtures/kraken';
 $ticker = json_decode((string)@file_get_contents("$fx/ticker.json"), true);
@@ -102,6 +122,22 @@ if ($hasMarkers && $node !== '' && is_array($ticker['result'] ?? null)) {
     $noOhlc = $run($ticker['result'], array_map(fn($x) => null, $ohlc));
     t_ok(is_array($noOhlc) && count($noOhlc) === 6 && array_filter(array_column($noOhlc, 'change'), fn($c) => $c !== null) === [],
         'without OHLC every row keeps its price and shows no 24h change (never a faked one)');
+    // Gap: if the hourly candle holding now-24h is missing, the older candle must NOT stand in for it
+    // (that would show a ~25h move as the 24h change); that coin shows no change, the others keep theirs.
+    $gappy = $ohlc;
+    $btcKey = 'XXBTZCAD';
+    $gappy['BTC'][$btcKey] = array_values(array_filter($gappy['BTC'][$btcKey], function ($k) use ($now) {
+        return !($k[0] <= $now - 86400 && $k[0] > $now - 86400 - 3600);
+    }));
+    // the real capture holds one candle at or before now-24h; add an older, very different one to stand in
+    array_unshift($gappy['BTC'][$btcKey], [$now - 86400 - 7200, '1.0', '1.0', '1.0', '1.0', '1.0', '1.0', 1]);
+    $hadOlder = false;
+    foreach ($gappy['BTC'][$btcKey] as $k) { if ($k[0] <= $now - 86400) { $hadOlder = true; } }
+    $gap = $run($ticker['result'], $gappy);
+    t_ok($hadOlder, 'gap fixture keeps an older candle that could wrongly stand in for the missing one');
+    t_ok(is_array($gap) && count($gap) === 6 && array_key_exists('change', $gap[0]) && $gap[0]['change'] === null
+        && is_numeric($gap[1]['change'] ?? null),
+        'a missing now-24h candle blanks only that coin\'s 24h change, never widens the window silently');
     $partial = $ticker['result'];
     unset($partial['SOLCAD']);
     $part = $run($partial, $ohlc);
@@ -112,7 +148,7 @@ if ($hasMarkers && $node !== '' && is_array($ticker['result'] ?? null)) {
 }
 
 // --- live contract ------------------------------------------------------------------------------
-$out = @shell_exec('curl -sS -m 30 -D - -H "Origin: https://swens.net" "https://api.kraken.com/0/public/Ticker?pair=XBTCAD,ETHCAD,XRPCAD,SOLCAD,USDTCAD,USDCCAD" 2>&1');
+$out = @shell_exec('curl -sS -m 30 -D - -H "Origin: https://swens.net" "https://api.kraken.com/0/public/Ticker?pair=' . implode(',', array_keys($pageCoins)) . '" 2>&1');
 $out = is_string($out) ? $out : '';
 if (!preg_match('~^HTTP/[\d.]+ (\d{3})~m', $out, $m)) {
     fwrite(STDERR, "SKIP live Kraken check: no HTTP response (curl or network unavailable)\n");
@@ -127,10 +163,12 @@ if (!preg_match('~^HTTP/[\d.]+ (\d{3})~m', $out, $m)) {
         'Kraken lets a browser on swens.net call it (CORS header present)');
     $res = is_array($lj['result'] ?? null) ? $lj['result'] : [];
     $good = 0;
-    foreach (['XXBTZCAD', 'XETHZCAD', 'XXRPZCAD', 'SOLCAD', 'USDTCAD', 'USDCCAD'] as $k) {
-        if ((float)($res[$k]['c'][0] ?? 0) > 0) { $good++; }
+    foreach ($pageCoins as $keys) {
+        foreach ($keys as $k) {
+            if ((float)($res[$k]['c'][0] ?? 0) > 0) { $good++; break; }
+        }
     }
-    t_ok(($lj['error'] ?? ['x']) === [] && $good === 6,
+    t_ok(($lj['error'] ?? ['x']) === [] && $good === count($pageCoins) && $good > 0,
         "Kraken Ticker returns all six CAD pairs under the keys the page reads ($good of 6)");
 }
 

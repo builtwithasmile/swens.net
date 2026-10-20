@@ -115,6 +115,8 @@
       if (candles && candles.length) {
         var target = nowSec - 86400, ref = null;
         candles.forEach(function (k) { if (k[0] <= target) ref = k; });
+        // the candle must hold "now minus 24h"; an older one (missing candle) would widen the window
+        if (ref && ref[0] <= target - 3600) ref = null;
         var open = ref ? parseFloat(ref[1]) : NaN;
         if (open > 0) change = (price / open - 1) * 100;
       }
@@ -134,12 +136,14 @@
     });
   }
 
+  // the Ticker decides whether the table renders, so it goes out before the OHLC burst
+  var tickerReq = krakenGet('Ticker?pair=' + COINS.map(function (c) { return c.pair; }).join(','));
   var since = Math.floor(Date.now() / 1000) - 90000;
   var ohlc = COINS.map(function (c) {
     // a missing candle list only blanks that coin's 24h cell, never the table
     return krakenGet('OHLC?pair=' + c.pair + '&interval=60&since=' + since).catch(function () { return null; });
   });
-  krakenGet('Ticker?pair=' + COINS.map(function (c) { return c.pair; }).join(','))
+  tickerReq
     .then(function (ticker) {
       return Promise.all(ohlc).then(function (list) {
         var by = {};
